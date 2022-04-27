@@ -17,40 +17,24 @@ const client = sql_client.createConnection({
 })
 client.connect(err => console.log(err || `> Connection stablished`))
 const api=process.env.CLOUD_FUNCTION
-//version
-app.get("/version", (req,res)=>{
-    res.json({version:"version 1"})
-});
-//insert data
-app.post("/insertData", (req,res)=>{ 
-    jwt.verify(req.token, 'secretKey',(error, authData)=>{
-        if (error) {
-            res.sendStatus(403);
-            console.log(error)
-        } else {
-            try {
-                axios
-                .post(api+'/newEntry', req.body)
-                .then(data => {
-                    res.json(data)
-                })
-                .catch((error)=>res.json({message:error}))   
-            } catch (error) {
-                res.json({message:error})
-            }           
-        }
-    })
-});
+
+
+
+app.post('/signup', ({ body }, res) => signup(body, res))
+app.post('/signin', ({ body }, res) => signin(body, res))
+app.post('/insert', ({ body}, res) => insert(body, res))
+app.post('/insert', ({ body}, res) => insert(body, res))
+
 //Registrarse
-app.post("/signup", (req, res) => {
+const signup = ({ table, names, values }, res) => {
     try {
-        const n = req.body.names.join(', ')
-        const v = req.body.values.map(v => `'${v}'`).join(', ')
-        const sql = `INSERT INTO ${req.body.table} (${n}) VALUES (${v})`
+        const n = names.join(', ')
+        const v = values.map(v => `'${v}'`).join(', ')
+        const sql = `INSERT INTO ${table} (${n}) VALUES (${v})`
         console.log(`> Executing ${sql}`)
-        client.query(sql, req.body.values, (err, r) => {
+        client.query(sql, values, (err, r) => {
             if (err){
-                console.log(`! Error inserting to table ${req.body.table}`)
+                console.log(`! Error inserting to table ${table}`)
                 console.log(err)
                 return {status:false}
             }
@@ -67,19 +51,20 @@ app.post("/signup", (req, res) => {
         console.log(error)
         res.json({status:3})
     }  
-});
+}
 //login
-app.post("/signin", (req,res)=>{
+const signin = ({ username, pass }, res) => {
     try {
+        console.log(username)
         axios
         .post(api+'/getData', {
             table:"user",
-            id:req.body.username,
+            id:username,
             tableid:"username"
             })
         .then(result => {
             console.log(result.data)
-            if (String(result.data[0].password)===String(req.body.pass)) {
+            if (String(result.data[0].password)===String(pass)) {
                 jwt.sign({result:result.data}, "secretKey",{expiresIn:"12d"},(err, token)=>{
                     res.json({
                         token,
@@ -96,24 +81,33 @@ app.post("/signin", (req,res)=>{
         res.status(400).json({Error:error, status:3})
         console.log(error)
     }    
-});
-//obtenerTodos ya sea img o album, user
-app.get("/allData", verifyToken, async (req,res)=>{
+};
+//insert data ya sea album, img, union
+app.post("/insertData", (req,res)=>{ 
     jwt.verify(req.token, 'secretKey',(error, authData)=>{
         if (error) {
             res.sendStatus(403);
             console.log(error)
-        } else {   
+        } else {
             try {
-                axios
-                .post(api+'/getData', req.body)
-                .then(data => {
-                    res.json(data)
+                const n = names.join(', ')
+                const v = values.map(v => `'${v}'`).join(', ')
+                const sql = `INSERT INTO ${table} (${n}) VALUES (${v})`
+                console.log(`> Executing ${sql}`)
+                client.query(sql, values, (err, r) => {
+                    if (err){
+                        console.log(`! Error inserting to table ${table}`)
+                        console.log(err)
+                        return res.json(err).status(500)
+                    }
+            
+                    console.log(`> Success inserting to table ${table}`)
+                    console.log(r)
+                    res.json(r)
                 })
-                .catch((error)=>res.json({message:error}))   
             } catch (error) {
                 res.json({message:error})
-            }                                            
+            }           
         }
     })
 });
@@ -137,26 +131,7 @@ app.put("/update", verifyToken, (req,res)=>{
         }
     })
 });
-//deleteUserImg
-app.delete("/dataDelete", verifyToken, (req,res)=>{
-    jwt.verify(req.token, 'secretKey',(error, authData)=>{
-        if (error) {
-            res.sendStatus(403);
-            console.log(error)
-        } else {            
-            try {
-                axios
-                .post(api+'/deleteData', req.body)
-                .then(data => {
-                    res.json(data)
-                })
-                .catch((error)=>res.json({message:error}))   
-            } catch (error) {
-                res.json({message:error})
-            }            
-        }
-    })
-});
+
 //deleteAlbum
 app.delete("/dataAlbum", verifyToken, (req,res)=>{
     jwt.verify(req.token, 'secretKey',(error, authData)=>{
@@ -177,22 +152,45 @@ app.delete("/dataAlbum", verifyToken, (req,res)=>{
         }
     })
 });
-//especial
-app.post("/especial", verifyToken, (req,res)=>{
-    try {
-        console.log(req.body)
-        axios
-        .post(api+'/especial', {
-            consul:req.body.consulta
-            })
-        .then(result => {
-            res.json({result})
-        })
-        .catch((error)=>{res.status(400).json({message:error}); console.log(error)})   
-    } catch (error) {
-        res.status(400).json({message:error})
-        console.log(error)
-    }   
+//obtener uno por alguna columna
+app.get("/allData", verifyToken, async (req,res)=>{
+    jwt.verify(req.token, 'secretKey',(error, authData)=>{
+        if (error) {
+            res.sendStatus(403);
+            console.log(error)
+        } else {   
+            try {
+                axios
+                .post(api+'/getData', req.body)
+                .then(data => {
+                    res.json(data)
+                })
+                .catch((error)=>res.json({message:error}))   
+            } catch (error) {
+                res.json({message:error})
+            }                                            
+        }
+    })
+});
+//obtenerTodos ya sea img o album, user
+app.get("/allData", verifyToken, async (req,res)=>{
+    jwt.verify(req.token, 'secretKey',(error, authData)=>{
+        if (error) {
+            res.sendStatus(403);
+            console.log(error)
+        } else {   
+            try {
+                axios
+                .post(api+'/getData', req.body)
+                .then(data => {
+                    res.json(data)
+                })
+                .catch((error)=>res.json({message:error}))   
+            } catch (error) {
+                res.json({message:error})
+            }                                            
+        }
+    })
 });
 function verifyToken(req, res, next){
 const bearerHeader=req.headers['authorization'];
@@ -208,3 +206,25 @@ const bearerHeader=req.headers['authorization'];
 app.listen(8000, function(){
     console.log("nodejs running on 8000")
 })
+
+
+
+/*
+crear album *
+agregar imagen *
+anadir imagen a album *
+
+favoritos imagen *
+
+obtener imagenes de un album*
+obtener perfil *
+
+eliminar album *
+
+
+cambiar password
+modificar sus datos
+editar nombre album
+eliminar cuenta
+quitar imagen de album
+*/
