@@ -193,7 +193,9 @@ app.get("/allData", verifyToken, async (req,res)=>{
     })
 });
 function verifyToken(req, res, next){
+    console.log(req.headers)
 const bearerHeader=req.headers['authorization'];
+console.log(bearerHeader+'---------')
     if (typeof bearerHeader!=='undefined') {
         const bearerToken=bearerHeader.split(" ")[1];
         req.token=bearerToken;
@@ -202,6 +204,7 @@ const bearerHeader=req.headers['authorization'];
         console.log("err1")
         res.sendStatus(403);
     }
+    next()
 }
 app.listen(3000, function(){
     console.log("nodejs running on 3000")
