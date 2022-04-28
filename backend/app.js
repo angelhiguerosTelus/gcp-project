@@ -206,8 +206,8 @@ console.log(bearerHeader+'---------')
     }
     next()
 }
-app.listen(3000, function(){
-    console.log("nodejs running on 3000")
+app.listen(8000, function(){
+    console.log("nodejs running on 8000")
 })
 
 
