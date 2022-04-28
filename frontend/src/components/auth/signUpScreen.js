@@ -1,6 +1,8 @@
-import React from 'react'
-import { useForm } from '../../hooks/useForm';
-import Swal from 'sweetalert2'
+import React from "react";
+import { useForm } from "../../hooks/useForm";
+import Swal from "sweetalert2";
+import api from "../../api";
+import bg from "../../assets/img/background2.png";
 
 export const SignUpScreen = () => {
   const [values, handleInputChange, reset] = useForm({});
@@ -8,29 +10,41 @@ export const SignUpScreen = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // let data = await api.users.create({
-    //   name: values.name,
-    //   username: values.username,
-    //   password: values.password,
-    //   biography: values.biography
-    //   gravatar: values.gravatar
-    // });
+    let data = await api.users.create({
+      table: "user",
+      names: ["name", "username", "password", "biografia", "gravatar"],
+      values: [
+        values.name,
+        values.username,
+        values.password,
+        values.biography,
+        values.gravatar,
+      ],
+    });
 
-    if (true) {
-      window.location.href = "/app";
+    if (parseInt(data.status) === 1) {
+      Swal.fire("User created successfuly", "", "success").then(() => {
+        window.location.href = "/";
+      });
     } else {
-      Swal.fire("Error", "", "error");
+      Swal.fire(data.message, "", "error");
     }
   };
 
   return (
     <>
-      <div class="sidenav">
+      <div
+        class="sidenav"
+        style={{
+          background: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${bg})`,
+          backgroundColor: "black",
+        }}
+      >
         <div class="login-main-text">
-          <h2>
+          <h1>
             GCP
             <br /> Project
-          </h2>
+          </h1>
           <p>Login or register from here to access.</p>
         </div>
       </div>
@@ -38,7 +52,7 @@ export const SignUpScreen = () => {
         <div class="col-md-6 col-sm-12">
           <div class="login-form">
             <form onSubmit={handleSubmit}>
-            <div class="form-group">
+              <div class="form-group">
                 <label>Name</label>
                 <input
                   name="name"
@@ -106,4 +120,4 @@ export const SignUpScreen = () => {
       </div>
     </>
   );
-}
+};

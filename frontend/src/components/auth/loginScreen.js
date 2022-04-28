@@ -2,34 +2,48 @@ import React from "react";
 import api from "../../api";
 import { useForm } from "../../hooks/useForm";
 import Swal from "sweetalert2";
+import { useSessionStorage } from "../../hooks/useSessionStorage";
+import bg from "../../assets/img/background.png";
 
 export const LoginScreen = () => {
   const [values, handleInputChange, reset] = useForm({});
+  const [userData, setUserData] = useSessionStorage({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // let data = await api.users.login({
-    //   username: values.username,
-    //   password: values.password,
-    // });
+    let data = await api.users.login({
+      username: values.username,
+      pass: values.password,
+    });
 
-    if (true) {
-      // if (data.state) {
+    if (data.status === 1) {
+      // Inicio de sesión correcto
+
+      document.cookie = `token=${data.token}`;
+      setUserData(data.info[0]);
       window.location.href = "/app";
+    } else if (data.status === 2) {
+      Swal.fire(data.message, "", "warning");
     } else {
-      Swal.fire("User or passsword not valid", "", "error");
+      Swal.fire(data.message, "", "error");
     }
   };
 
   return (
     <>
-      <div class="sidenav">
+      <div
+        class="sidenav"
+        style={{
+          background: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${bg})`,
+          backgroundColor: "black",
+        }}
+      >
         <div class="login-main-text">
-          <h2>
+          <h1>
             GCP
             <br /> Project
-          </h2>
+          </h1>
           <p>Login or register from here to access.</p>
         </div>
       </div>
