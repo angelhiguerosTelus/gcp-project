@@ -4,10 +4,22 @@ require("dotenv").config();
 const axios = require('axios')
 var bodyParser = require('body-parser');
 const jwt=require("jsonwebtoken")
+const cors=require("cors")
 const app=express()
 //const actions=require('./controllers/userController')
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost')
+    next()
+})
+
+
+app.use(cors())
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}))
+
+app.set('trust proxy', true)
+
 const client = sql_client.createConnection({
     database: 'imagenes',
     host: "35.223.76.112",
@@ -19,7 +31,6 @@ client.connect(err => console.log(err || `> Connection stablished`))
 const api=process.env.CLOUD_FUNCTION
 
 
-
 app.post('/signup', ({ body }, res) => signup(body, res))
 app.post('/signin', ({ body }, res) => signin(body, res))
 app.post('/insertData', verifyToken, ({ body}, res) => insertData(body, res))
@@ -28,7 +39,7 @@ app.post('/update', verifyToken, ({ body}, res) => insertData(body, res))
 app.post('/deleteAlbum', verifyToken, ({ body}, res) => insertData(body, res))
 
 //Registrarse
-const signup = ({ table, names, values }, res) => {
+const signup = ({ names, values, table }) => {
     try {
         const n = names.join(', ')
         const v = values.map(v => `'${v}'`).join(', ')
@@ -56,6 +67,7 @@ const signup = ({ table, names, values }, res) => {
 }
 //login
 const signin = ({ username, pass }, res) => {
+    console.log(username, pass)
     try {
         axios
         .post(api+'/getData', {
@@ -183,8 +195,8 @@ function verifyToken(req, res, next){
     })
   }
 
-app.listen(3000, function(){
-    console.log("nodejs running on 3000")
+app.listen(3001, function(){
+    console.log("nodejs running on 3001")
 })
 
 
