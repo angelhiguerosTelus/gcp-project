@@ -17,18 +17,28 @@ const client = sql_client.createConnection({
 })
 client.connect(err => console.log(err || `> Connection stablished`))
 const api=process.env.CLOUD_FUNCTION
+const names={
+    album:['name', 'idUserA'],
+    user:["name","username","password","biografia","gravatar"],
+    image:['descripcion','favorito','URL','idUserI'],
+    union:['idAlbumU','idImgU']
+}
 
+app.post('/especial', ({ body}, res) => especial(body, res))
 
-
-app.post('/signup', ({ body }, res) => signup(body, res))
+app.post('/signup', ({ body }, res) => signup('user',names.user,body.values, res))
 app.post('/signin', ({ body }, res) => signin(body, res))
-app.post('/insertData', verifyToken, ({ body}, res) => insertData(body, res))
-app.get('/oneData', verifyToken, ({ body}, res) => oneData(body, res))
-app.post('/update', verifyToken, ({ body}, res) => insertData(body, res))
-app.post('/deleteAlbum', verifyToken, ({ body}, res) => insertData(body, res))
+app.post('/insertDataImagen', verifyToken, ({ body}, res) => insertData('imagenes',names.image,body.values, res))
+app.post('/insertDataAlbum', verifyToken, ({ body}, res) => insertData('album',names.album,body.values, res))
+app.post('/insertDataUnion', verifyToken, ({ body}, res) => insertData('albumImg',names.union,body.values, res))
+app.get('/oneDataImage', verifyToken, ({ body}, res) => oneData('imagenes','idUserI',body.id, res))
+app.get('/oneDataAlbum', verifyToken, ({ body}, res) => oneData('album','idUserA',body.id, res))
+app.get('/oneDataUnion', verifyToken, ({ body}, res) => oneData('albumImg','idAlbumU',body.id, res))
+app.put('/newFav', verifyToken, ({ body}, res) => update('imagenes','idImg',body, res))
+app.delete('/deleteAlbum', verifyToken, ({ body}, res) => deleteAlbum(body, res))
 
 //Registrarse
-const signup = ({ table, names, values }, res) => {
+const signup = (table, names, values, res) => {
     try {
         const n = names.join(', ')
         const v = values.map(v => `'${v}'`).join(', ')
@@ -66,7 +76,7 @@ const signin = ({ username, pass }, res) => {
         .then(result => {
             console.log(result.data)
             if ((String(result.data[0]?.password)===String(pass))) {
-                jwt.sign({result:result.data}, process.env.TOKEN_SECRET,{expiresIn:"12d"}, (err, token)=>{
+                jwt.sign({result:result.data[0].idUser}, process.env.TOKEN_SECRET,{expiresIn:"12d"}, (err, token)=>{
                     res.json({
                         token,
                         info:result.data,
@@ -84,7 +94,7 @@ const signin = ({ username, pass }, res) => {
     }    
 };
 //insert data ya sea album, img, union
-const insertData = ({ table, names, values }, res) => {
+const insertData = (table, names, values, res) => {
     try {  
         const n = names.join(', ')
         const v = values.map(v => `'${v}'`).join(', ')
@@ -94,7 +104,7 @@ const insertData = ({ table, names, values }, res) => {
             if (err){
                 console.log(`! Error inserting to table ${table}`)
                 console.log(err)
-                return res.json(err).status(500)
+                return res.json({status:2}).status(500)
             }
     
             console.log(`> Success inserting to table ${table}`)
@@ -107,44 +117,49 @@ const insertData = ({ table, names, values }, res) => {
     }             
 };
 //updateData
-app.put("/update", verifyToken, (req,res)=>{
-    if (error) {
-        res.sendStatus(403);
+const update = (table, tableId, campos, res) => {
+    try {  
+        const sql = `UPDATE ${table} SET ${campos.data} WHERE ${tableId}=${campos.id}`
+        console.log(`> Executing ${sql}`)
+        client.query(sql, (err, r) => {
+            if (err){
+                console.log(`! Error updating to table ${table}`)
+                console.log(err)
+                return res.json({status:2}).status(500)
+            }
+            console.log(`> Success inserting to table ${table}`)
+            console.log(r)
+            res.json(r)
+        })         
+    } catch (error) {
         console.log(error)
-    } else {
-        try {
-            axios
-            .post(api+'/updateData', req.body)
-            .then(data => {
-                res.json(data)
-            })
-            .catch((error)=>res.json({message:error}))   
-        } catch (error) {
-            res.json({message:error})
-        }           
-    }
-});
-
+        res.json({message:error})
+    }             
+};
 //deleteAlbum
-app.delete("/deleteAlbum", verifyToken, (req,res)=>{
-        if (error) {
-            res.sendStatus(403);
-            console.log(error)
-        } else {            
-            try {
-                axios
-                .post(api+'/deleteAlbum', req.body)
-                .then(data => {
-                    res.json(data)
-                })
-                .catch((error)=>res.json({message:error}))   
-            } catch (error) {
-                res.json({message:error})
-            }            
-        }
-});
+const deleteAlbum = (datos, res) => {
+    try {  
+        const sql = `DELETE * FROM albumImg WHERE idAlbumU=${datos.id}`
+        console.log(`> Executing ${sql}`)
+       /*  client.query(sql, (err, r) => {
+            if (err){
+                console.log(`! Error updating to table ${table}`)
+                console.log(err)
+                return res.json({status:2}).status(500)
+            }
+            console.log(`> Success inserting to table ${table}`)
+            console.log(r)
+            res.json(r)
+        })   */       
+        res.json({message:'124'})
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    } 
+}
+
 //obtener uno por alguna columna
-const oneData = ({ table, id, tableid}, res) => {
+const oneData = (table, tableid, id, res) => {
     try {
         axios
         .post(api+'/getData', {
@@ -159,13 +174,25 @@ const oneData = ({ table, id, tableid}, res) => {
             status:1
         })
         })
-        .catch((error)=>{res.status(400).json({message:error}); console.log(error)})   
+        .catch((error)=>{res.status(400).json({status:2,message:error}); console.log(error)})   
     } catch (error) {
         res.status(400).json({Error:error, status:3})
         console.log(error)
     }   
 }
-
+const especial = ({ consulta }, res) => {
+    const sql = consulta
+    console.log(`> Executing ${sql}`)
+    client.query(sql, (err, r) => {
+        if (err){
+            console.log(err)
+            return res.json(err).status(500)
+        }
+        console.table(r)
+        
+        res.json(r)
+    })
+}
 function verifyToken(req, res, next){
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
@@ -190,14 +217,9 @@ app.listen(3000, function(){
 
 
 /*
-crear album *
-agregar imagen *
-anadir imagen a album *
 
 favoritos imagen *
 
-obtener imagenes de un album*
-obtener perfil *
 
 eliminar album *
 
@@ -205,6 +227,7 @@ eliminar album *
 cambiar password
 modificar sus datos
 editar nombre album
+
 eliminar cuenta
 quitar imagen de album
 
