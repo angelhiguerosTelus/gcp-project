@@ -4,10 +4,22 @@ require("dotenv").config();
 const axios = require('axios')
 var bodyParser = require('body-parser');
 const jwt=require("jsonwebtoken")
+const cors=require("cors")
 const app=express()
 //const actions=require('./controllers/userController')
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost')
+    next()
+})
+
+
+app.use(cors())
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}))
+
+app.set('trust proxy', true)
+
 const client = sql_client.createConnection({
     database: 'imagenes',
     host: "35.223.76.112",
@@ -37,7 +49,7 @@ app.get('/oneDataUnion', verifyToken, ({ body}, res) => oneData('albumImg','idAl
 app.put('/newFav', verifyToken, ({ body}, res) => update('imagenes','idImg',body, res))
 app.delete('/deleteAlbum', verifyToken, ({ body}, res) => deleteAlbum(body, res))
 
-//Registrarse
+
 const signup = (table, names, values, res) => {
     try {
         const n = names.join(', ')
@@ -66,6 +78,7 @@ const signup = (table, names, values, res) => {
 }
 //login
 const signin = ({ username, pass }, res) => {
+    console.log(username, pass)
     try {
         axios
         .post(api+'/getData', {
@@ -210,8 +223,8 @@ function verifyToken(req, res, next){
     })
   }
 
-app.listen(3000, function(){
-    console.log("nodejs running on 3000")
+app.listen(3001, function(){
+    console.log("nodejs running on 3001")
 })
 
 
