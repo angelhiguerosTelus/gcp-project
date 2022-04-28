@@ -22,8 +22,10 @@ const api=process.env.CLOUD_FUNCTION
 
 app.post('/signup', ({ body }, res) => signup(body, res))
 app.post('/signin', ({ body }, res) => signin(body, res))
-app.post('/insert', ({ body}, res) => insert(body, res))
-app.post('/insert', ({ body}, res) => insert(body, res))
+app.post('/insertData', verifyToken, ({ body}, res) => insertData(body, res))
+app.get('/oneData', verifyToken, ({ body}, res) => oneData(body, res))
+app.post('/update', verifyToken, ({ body}, res) => insertData(body, res))
+app.post('/deleteAlbum', verifyToken, ({ body}, res) => insertData(body, res))
 
 //Registrarse
 const signup = ({ table, names, values }, res) => {
@@ -38,7 +40,7 @@ const signup = ({ table, names, values }, res) => {
                 console.log(err)
                 return {status:false}
             }
-           jwt.sign({id:r.insertId}, "secretKey",{expiresIn:"12d"}, (err, token)=>{
+           jwt.sign({id:r.insertId}, process.env.TOKEN_SECRET,{expiresIn:"12d"}, (err, token)=>{
                 res.json({
                     token:  token,
                     id:r.insertId,
@@ -55,7 +57,6 @@ const signup = ({ table, names, values }, res) => {
 //login
 const signin = ({ username, pass }, res) => {
     try {
-        console.log(username)
         axios
         .post(api+'/getData', {
             table:"user",
@@ -64,8 +65,8 @@ const signin = ({ username, pass }, res) => {
             })
         .then(result => {
             console.log(result.data)
-            if (String(result.data[0].password)===String(pass)) {
-                jwt.sign({result:result.data}, "secretKey",{expiresIn:"12d"},(err, token)=>{
+            if ((String(result.data[0]?.password)===String(pass))) {
+                jwt.sign({result:result.data}, process.env.TOKEN_SECRET,{expiresIn:"12d"}, (err, token)=>{
                     res.json({
                         token,
                         info:result.data,
@@ -83,58 +84,49 @@ const signin = ({ username, pass }, res) => {
     }    
 };
 //insert data ya sea album, img, union
-app.post("/insertData", (req,res)=>{ 
-    jwt.verify(req.token, 'secretKey',(error, authData)=>{
-        if (error) {
-            res.sendStatus(403);
-            console.log(error)
-        } else {
-            try {
-                const n = names.join(', ')
-                const v = values.map(v => `'${v}'`).join(', ')
-                const sql = `INSERT INTO ${table} (${n}) VALUES (${v})`
-                console.log(`> Executing ${sql}`)
-                client.query(sql, values, (err, r) => {
-                    if (err){
-                        console.log(`! Error inserting to table ${table}`)
-                        console.log(err)
-                        return res.json(err).status(500)
-                    }
-            
-                    console.log(`> Success inserting to table ${table}`)
-                    console.log(r)
-                    res.json(r)
-                })
-            } catch (error) {
-                res.json({message:error})
-            }           
-        }
-    })
-});
+const insertData = ({ table, names, values }, res) => {
+    try {  
+        const n = names.join(', ')
+        const v = values.map(v => `'${v}'`).join(', ')
+        const sql = `INSERT INTO ${table} (${n}) VALUES (${v})`
+        console.log(`> Executing ${sql}`)
+        client.query(sql, values, (err, r) => {
+            if (err){
+                console.log(`! Error inserting to table ${table}`)
+                console.log(err)
+                return res.json(err).status(500)
+            }
+    
+            console.log(`> Success inserting to table ${table}`)
+            console.log(r)
+            res.json(r)
+        })
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    }             
+};
 //updateData
 app.put("/update", verifyToken, (req,res)=>{
-    jwt.verify(req.token, 'secretKey',(error, authData)=>{
-        if (error) {
-            res.sendStatus(403);
-            console.log(error)
-        } else {
-            try {
-                axios
-                .post(api+'/updateData', req.body)
-                .then(data => {
-                    res.json(data)
-                })
-                .catch((error)=>res.json({message:error}))   
-            } catch (error) {
-                res.json({message:error})
-            }           
-        }
-    })
+    if (error) {
+        res.sendStatus(403);
+        console.log(error)
+    } else {
+        try {
+            axios
+            .post(api+'/updateData', req.body)
+            .then(data => {
+                res.json(data)
+            })
+            .catch((error)=>res.json({message:error}))   
+        } catch (error) {
+            res.json({message:error})
+        }           
+    }
 });
 
 //deleteAlbum
-app.delete("/dataAlbum", verifyToken, (req,res)=>{
-    jwt.verify(req.token, 'secretKey',(error, authData)=>{
+app.delete("/deleteAlbum", verifyToken, (req,res)=>{
         if (error) {
             res.sendStatus(403);
             console.log(error)
@@ -150,64 +142,49 @@ app.delete("/dataAlbum", verifyToken, (req,res)=>{
                 res.json({message:error})
             }            
         }
-    })
 });
 //obtener uno por alguna columna
-app.get("/allData", verifyToken, async (req,res)=>{
-    jwt.verify(req.token, 'secretKey',(error, authData)=>{
-        if (error) {
-            res.sendStatus(403);
-            console.log(error)
-        } else {   
-            try {
-                axios
-                .post(api+'/getData', req.body)
-                .then(data => {
-                    res.json(data)
-                })
-                .catch((error)=>res.json({message:error}))   
-            } catch (error) {
-                res.json({message:error})
-            }                                            
-        }
-    })
-});
-//obtenerTodos ya sea img o album, user
-app.get("/allData", verifyToken, async (req,res)=>{
-    jwt.verify(req.token, 'secretKey',(error, authData)=>{
-        if (error) {
-            res.sendStatus(403);
-            console.log(error)
-        } else {   
-            try {
-                axios
-                .post(api+'/getData', req.body)
-                .then(data => {
-                    res.json(data)
-                })
-                .catch((error)=>res.json({message:error}))   
-            } catch (error) {
-                res.json({message:error})
-            }                                            
-        }
-    })
-});
-function verifyToken(req, res, next){
-    console.log(req.headers)
-const bearerHeader=req.headers['authorization'];
-console.log(bearerHeader+'---------')
-    if (typeof bearerHeader!=='undefined') {
-        const bearerToken=bearerHeader.split(" ")[1];
-        req.token=bearerToken;
-        next();
-    } else {
-        console.log("err1")
-        res.sendStatus(403);
-    }
-    next()
+const oneData = ({ table, id, tableid}, res) => {
+    try {
+        axios
+        .post(api+'/getData', {
+            table,
+            id,
+            tableid
+            })
+        .then(result => {
+        console.log(result.data)
+        res.json({
+            info:result.data,
+            status:1
+        })
+        })
+        .catch((error)=>{res.status(400).json({message:error}); console.log(error)})   
+    } catch (error) {
+        res.status(400).json({Error:error, status:3})
+        console.log(error)
+    }   
 }
-app.listen(8000, function(){
-    console.log("nodejs running on 8000")
+
+function verifyToken(req, res, next){
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+    if (token == null) return res.sendStatus(401)
+
+    jwt.verify(token, String(process.env.TOKEN_SECRET), (err, user) => {
+      if (err!=null) {
+          console.log('desde token')
+        console.log(err)  
+      }
+
+      if (err) return res.sendStatus(403)
+      
+      next()
+    })
+  }
+
+app.listen(3000, function(){
+    console.log("nodejs running on 3000")
 })
 
 
@@ -230,4 +207,5 @@ modificar sus datos
 editar nombre album
 eliminar cuenta
 quitar imagen de album
+
 */

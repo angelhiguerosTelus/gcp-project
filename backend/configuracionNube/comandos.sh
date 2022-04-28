@@ -31,6 +31,10 @@ gcloud sql users set-password root \
            "type": "VARCHAR(30)"
         },
         {
+           "name": "status",
+           "type": "VARCHAR(10)"
+        },
+        {
            "name": "biografia",
            "type": "VARCHAR(30)"
         },
@@ -45,7 +49,7 @@ gcloud sql users set-password root \
         }
     ]
 }
-# CREATE TABLE user (idUser INT(10) AUTO_INCREMENT,name VARCHAR(30),username VARCHAR(30),password VARCHAR(30),biografia VARCHAR(30),gravatar VARCHAR(100),PRIMARY KEY (idUser))
+# CREATE TABLE user (idUser INT(10) AUTO_INCREMENT,name VARCHAR(30),username VARCHAR(30),status VARCHAR(10),password VARCHAR(30),biografia VARCHAR(30),gravatar VARCHAR(100),PRIMARY KEY (idUser))
 
 #------------album data
 {
@@ -141,7 +145,7 @@ gcloud sql users set-password root \
         }
     ]
 }
-#REATE TABLE albumImg (idUn INT(10) AUTO_INCREMENT,idAlbumU INT(10) NOT NULL,idImgU INT(10) NOT NULL,PRIMARY KEY (idUn),CONSTRAINT fk_album  FOREIGN KEY(idAlbumU) REFERENCES album(idAlbum) ON DELETE CASCADE ON UPDATE CASCADE,CONSTRAINT fk_img  FOREIGN KEY(idImgU) REFERENCES imagenes(idImg) ON DELETE CASCADE ON UPDATE CASCADE)
+#CREATE TABLE albumImg (idUn INT(10) AUTO_INCREMENT,idAlbumU INT(10) NOT NULL,idImgU INT(10) NOT NULL,PRIMARY KEY (idUn),CONSTRAINT fk_album  FOREIGN KEY(idAlbumU) REFERENCES album(idAlbum) ON DELETE CASCADE ON UPDATE CASCADE,CONSTRAINT fk_img  FOREIGN KEY(idImgU) REFERENCES imagenes(idImg) ON DELETE CASCADE ON UPDATE CASCADE)
 
 #comandos para la cloud functions
 gcloud functions deploy 'finalproject' --runtime nodejs16 --trigger-http --entry-point=function
