@@ -11,8 +11,6 @@ export const SignUpScreen = () => {
     e.preventDefault();
 
     let data = await api.users.create({
-      table: "user",
-      names: ["name", "username", "password", "biografia", "gravatar"],
       values: [
         values.name,
         values.username,
