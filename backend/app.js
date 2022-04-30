@@ -6,19 +6,26 @@ var bodyParser = require('body-parser');
 const jwt=require("jsonwebtoken")
 const cors=require("cors")
 const app=express()
-//const actions=require('./controllers/userController')
+const path = require('path');
+const Multer = require('multer');
+const {format} = require('util');
+const {Storage}=require('@google-cloud/storage')
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost')
     next()
 })
-
-
 app.use(cors())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
-
 app.set('trust proxy', true)
+
+const multer = Multer({
+    storage: Multer.memoryStorage(),
+    limits: {
+      fileSize: 5 * 1024 * 1024, // no larger than 5mb, you can change as needed.
+    },
+  });
 
 const client = sql_client.createConnection({
     database: 'imagenes',
@@ -29,6 +36,8 @@ const client = sql_client.createConnection({
 })
 client.connect(err => console.log(err || `> Connection stablished`))
 const api=process.env.CLOUD_FUNCTION
+
+
 const names={
     album:['name', 'idUserA'],
     user:["name","username","password","biografia","gravatar"],
@@ -36,11 +45,19 @@ const names={
     union:['idAlbumU','idImgU']
 }
 
+const gc=new Storage({
+    keyFilename: path.join(__dirname,'./final-348322-13c94f130c78.json'),
+    projectId:'final-348322'
+});
+const bucket= gc.bucket('storage-images');
+
+
+
 app.post('/especial', ({ body}, res) => especial(body, res))
 
 app.post('/signup', ({ body }, res) => signup('user',names.user,body.values, res))
 app.post('/signin', ({ body }, res) => signin(body, res))
-app.post('/insertDataImagen', verifyToken, ({ body}, res) => insertData('imagenes',names.image,body.values, res))
+app.post('/insertDataImagen', ({body}, res) => insertData('imagenes',names.image, body.values, res))
 app.post('/insertDataAlbum', verifyToken, ({ body}, res) => insertData('album',names.album,body.values, res))
 app.post('/insertDataUnion', verifyToken, ({ body}, res) => insertData('albumImg',names.union,body.values, res))
 app.get('/oneDataImage', verifyToken, ({ body}, res) => oneData('imagenes','idUserI',body.id, res))
@@ -49,6 +66,28 @@ app.get('/oneDataUnion', verifyToken, ({ body}, res) => oneData('albumImg','idAl
 app.put('/newFav', verifyToken, ({ body}, res) => update('imagenes','idImg',body, res))
 app.delete('/deleteAlbum', verifyToken, ({ body}, res) => deleteAlbum(body, res))
 
+// Process the file upload and upload to Google Cloud Storage.
+app.post('/upload', multer.single('file'), (req, res, next) => {
+    if (!req.file) {
+      res.status(400).json('No file uploaded.');
+      return;
+    }
+    // Create a new blob in the bucket and upload the file data.
+    const blob = bucket.file(req.file.originalname);
+    const blobStream = blob.createWriteStream();
+    blobStream.on('error', err => {
+      next(err);
+    });
+    blobStream.on('finish', () => {
+      // The public URL can be used to directly access the file via HTTP.
+      const publicUrl = format(
+        `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+      );
+      console.log(publicUrl)
+      res.json({link:publicUrl});
+    });
+    blobStream.end(req.file.buffer);
+  });
 
 const signup = (table, names, values, res) => {
     try {
@@ -121,8 +160,8 @@ const insertData = (table, names, values, res) => {
             }
     
             console.log(`> Success inserting to table ${table}`)
-            console.log(r)
-            res.json(r)
+            console.log({status:1, id:r.insertId})
+            res.json({status:1, id:r.insertId})
         })
     } catch (error) {
         console.log(error)
