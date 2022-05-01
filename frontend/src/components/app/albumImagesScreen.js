@@ -1,38 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { useSessionStorage } from "../../hooks/useSessionStorage";
+import Swal from "sweetalert2";
 import api from "../../api";
 
-export const AppScreen = () => {
+export const AlbumImagesScreen = ({ match: { params } }) => {
+  const [idAlbum] = useState(params.idAlbum);
   const [userData] = useSessionStorage("user", {});
+  const [album, setAlbum] = useState([]);
   const [photos, setPhotos] = useState([]);
   const [currentPhoto, setCurrentPhoto] = useState({});
+
   const [view, setView] = useState(false);
 
-  const { idUser, name, username, biografia, gravatar } = userData;
+  const { idUser, name, username, gravatar } = userData;
 
   const handleViewPhoto = (photo) => {
     setCurrentPhoto(photo);
     setView(true);
   };
 
-  // Falta implementar
   const handleAddPhotoToFavorites = () => {
     // Los datos de la foto estan en "currentPhoto"
   };
 
   useEffect(() => {
-    const fetchPhotos = async () => {
-      let data = await api.controlAlbum.getPhotos({
-        id: idUser,
-      });
-
-      if (parseInt(data.status) === 1) {
-        setPhotos(data.info);
-      } else {
-        console.log(data.message);
-      }
+    // Get album info
+    const fetchAlbum = async () => {
+      let data = await api.controlAlbum.getAlbumInfo(idAlbum);
+      setAlbum(data.info[0]);
     };
-    fetchPhotos();
+    fetchAlbum();
+
+    // Get photos in the album
+    const fetchPhotos = async () => {
+      let data = await api.controlAlbum.getAlbumPhotos(idAlbum);
+      setPhotos(data.info);
+    };
+    fetchPhotos()
   }, []);
 
   return (
@@ -58,13 +62,11 @@ export const AppScreen = () => {
               </div>
             </div>
 
-            <div className="px-4 py-3">
-              <h5 className="mb-0">Biography</h5>
-              <div className="p-4 rounded shadow-sm bg-light">{biografia}</div>
-            </div>
             <div className="py-4 px-4">
               <div className="d-flex align-items-center justify-content-between mb-3">
-                <h5 className="mb-0">Photos</h5>
+                <h5 className="mb-0">
+                  Albums: <strong>{album.name}</strong>
+                </h5>
               </div>
               <div className="row ">
                 {photos.map((photo) => (
@@ -84,7 +86,6 @@ export const AppScreen = () => {
           </div>
         </div>
       </div>
-
       {/* Modal */}
       <div
         class="modal"

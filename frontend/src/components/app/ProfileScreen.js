@@ -1,20 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSessionStorage } from "../../hooks/useSessionStorage";
+import Swal from "sweetalert2";
 import api from "../../api";
 
 export const ProfileScreen = () => {
   const [userD, setUserD] = useSessionStorage("user", {});
-  const [userData, setUserData] = useState("user", userD);
+  const [userData, setUserData] = useState("user", {});
   const { idUser, name, username, biografia, gravatar, password } = userData;
 
+  useEffect(() => {
+    setUserData(userD);
+  }, [userD]);
+
+  const handleLogout = () => {
+    setUserD({})
+    window.location.href = '/'
+  }
+
   const handleInputChange = (e) => {
+    console.log(userData);
     setUserData({
       ...userData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleUpdateUser = () => {};
+  const handleUpdateUser = async (e) => {
+    e.preventDefault();
+    let data = await api.users.update({
+      id: idUser,
+      data: `name = '${name}', biografia = '${biografia}', password = '${password}', gravatar='${gravatar}'`,
+    });
+    setUserD({
+      ...userData,
+    });
+    Swal.fire("User updated successfully", "", "success");
+  };
 
   return (
     <div>
@@ -48,7 +69,7 @@ export const ProfileScreen = () => {
                 <h5 className="mb-0">Information</h5>
               </div>
               <div className="row ">
-                <form>
+                <form onSubmit={handleUpdateUser}>
                   <div class="form-group">
                     <label for="exampleFormControlInput1">Name</label>
                     <input
@@ -56,6 +77,7 @@ export const ProfileScreen = () => {
                       class="form-control"
                       value={name}
                       name="name"
+                      required
                       onChange={handleInputChange}
                     />
                   </div>
@@ -66,7 +88,9 @@ export const ProfileScreen = () => {
                       class="form-control"
                       value={username}
                       name="username"
+                      required
                       onChange={handleInputChange}
+                      disabled
                     />
                   </div>
                   <div class="form-group">
@@ -76,6 +100,7 @@ export const ProfileScreen = () => {
                       class="form-control"
                       value={biografia}
                       name="biografia"
+                      required
                       onChange={handleInputChange}
                     />
                   </div>
@@ -85,6 +110,7 @@ export const ProfileScreen = () => {
                       type="link"
                       class="form-control"
                       value={gravatar}
+                      required
                       name="gravatar"
                       onChange={handleInputChange}
                     />
@@ -96,11 +122,22 @@ export const ProfileScreen = () => {
                       class="form-control"
                       value={password}
                       name="password"
+                      required
                       onChange={handleInputChange}
                     />
                   </div>
-                  <div class="form-group">
-                    <button className="btn btn-success">Update</button>
+
+                  <div className="mt-5 d-flex align-items-center justify-content-between mb-3">
+                    <div class="form-group">
+                      <button type="submit" className="btn btn-success">
+                        Update
+                      </button>
+                    </div>
+                    <div class="form-group">
+                      <button onClick={handleLogout} className="btn btn-danger">
+                        Log out
+                      </button>
+                    </div>
                   </div>
                 </form>
               </div>
