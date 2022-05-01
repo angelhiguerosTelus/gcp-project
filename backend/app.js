@@ -60,11 +60,16 @@ app.post('/signin', ({ body }, res) => signin(body, res))
 app.post('/insertDataImagen', ({body}, res) => insertData('imagenes',names.image, body.values, res))
 app.post('/insertDataAlbum', verifyToken, ({ body}, res) => insertData('album',names.album,body.values, res))
 app.post('/insertDataUnion', verifyToken, ({ body}, res) => insertData('albumImg',names.union,body.values, res))
-app.get('/oneDataImage', verifyToken, ({ body}, res) => oneData('imagenes','idUserI',body.id, res))
+app.post('/oneDataImage', verifyToken, ({ body}, res) => oneData('imagenes','idUserI',body.id, res))
 app.get('/oneDataAlbum', verifyToken, ({ body}, res) => oneData('album','idUserA',body.id, res))
 app.get('/oneDataUnion', verifyToken, ({ body}, res) => oneData('albumImg','idAlbumU',body.id, res))
 app.put('/newFav', verifyToken, ({ body}, res) => update('imagenes','idImg',body, res))
 app.delete('/deleteAlbum', verifyToken, ({ body}, res) => deleteAlbum(body, res))
+app.post('/getFavoritesImages', verifyToken, ({ body}, res) => getFavoritesImages('imagenes',`idUserI = ${body.id} AND favorito = '1'`, res))
+app.post('/getAlbums', verifyToken, ({ body}, res) => getAlbums('album',`idUserA = '${body.id}'`, res))
+
+
+
 
 // Process the file upload and upload to Google Cloud Storage.
 app.post('/upload', multer.single('file'), (req, res, next) => {
@@ -168,6 +173,52 @@ const insertData = (table, names, values, res) => {
         res.json({message:error})
     }             
 };
+
+// Obetener las imagenes que guarden  como favoritos
+const getFavoritesImages = (table, filter, res) => {
+    try {  
+        const sql = `SELECT * FROM ${table} WHERE ${filter}`
+        console.log(`> Executing ${sql}`)
+        client.query(sql, (err, r) => {
+            if (err){
+                console.log(`! Error select from table ${table}`)
+                console.log(err)
+                return res.json({status:2}).status(500)
+            }
+    
+            console.log(`> Success select from table ${table}`)
+            console.log({status:1, info: r})
+            res.json({status:1, info:r})
+        })
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    }             
+};
+
+// Obetener  los albums del usuario
+const getAlbums = (table, filter, res) => {
+    try {  
+        const sql = `SELECT * FROM ${table} WHERE ${filter}`
+        console.log(`> Executing ${sql}`)
+        client.query(sql, (err, r) => {
+            if (err){
+                console.log(`! Error select from table ${table}`)
+                console.log(err)
+                return res.json({status:2}).status(500)
+            }
+    
+            console.log(`> Success select from table ${table}`)
+            console.log({status:1, info: r})
+            res.json({status:1, info:r})
+        })
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    }             
+};
+
+
 //updateData
 const update = (table, tableId, campos, res) => {
     try {  
@@ -232,6 +283,7 @@ const oneData = (table, tableid, id, res) => {
         console.log(error)
     }   
 }
+
 const especial = ({ consulta }, res) => {
     const sql = consulta
     console.log(`> Executing ${sql}`)

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSessionStorage } from "../../hooks/useSessionStorage";
 import api from "../../api";
 
-export const AppScreen = () => {
+export const FavoritesScreen = () => {
   const [userData] = useSessionStorage("user", {});
   const [photos, setPhotos] = useState([]);
   const [currentPhoto, setCurrentPhoto] = useState({});
@@ -15,18 +15,9 @@ export const AppScreen = () => {
     setView(true);
   };
 
-  // Falta implementar
-  const handleAddPhotoToFavorites = () => {
-    // Los datos de la foto estan en "currentPhoto"
-
-    
-
-
-  };
-
   useEffect(() => {
     const fetchPhotos = async () => {
-      let data = await api.controlAlbum.getPhotos({
+      let data = await api.controlAlbum.getFavoritesPhotos({
         id: idUser,
       });
 
@@ -62,13 +53,9 @@ export const AppScreen = () => {
               </div>
             </div>
 
-            <div className="px-4 py-3">
-              <h5 className="mb-0">Biography</h5>
-              <div className="p-4 rounded shadow-sm bg-light">{biografia}</div>
-            </div>
             <div className="py-4 px-4">
               <div className="d-flex align-items-center justify-content-between mb-3">
-                <h5 className="mb-0">Photos</h5>
+                <h5 className="mb-0">Favorite Photos</h5>
               </div>
               <div className="row ">
                 {photos.map((photo) => (
@@ -116,13 +103,9 @@ export const AppScreen = () => {
               <p>{currentPhoto.descripcion}</p>
             </div>
             <div class="modal-footer">
-              <button
-                onClick={handleAddPhotoToFavorites}
-                type="button"
-                class="btn btn-danger"
-              >
-                Add to favorite
-              </button>
+              {/* <button type="button" class="btn btn-danger">
+                Remove from favorite
+              </button> */}
               <button
                 onClick={() => setView(false)}
                 type="button"

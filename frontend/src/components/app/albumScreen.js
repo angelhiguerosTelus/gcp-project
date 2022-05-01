@@ -2,36 +2,32 @@ import React, { useEffect, useState } from "react";
 import { useSessionStorage } from "../../hooks/useSessionStorage";
 import api from "../../api";
 
-export const AppScreen = () => {
+export const AlbumScreen = () => {
   const [userData] = useSessionStorage("user", {});
-  const [photos, setPhotos] = useState([]);
+  const [albums, setAlbums] = useState([]);
   const [currentPhoto, setCurrentPhoto] = useState({});
   const [view, setView] = useState(false);
+  const [view2, setView2] = useState(false);
 
-  const { idUser, name, username, biografia, gravatar } = userData;
+  const { idUser, name, username, gravatar } = userData;
 
-  const handleViewPhoto = (photo) => {
-    setCurrentPhoto(photo);
+  const handleView = () => {
     setView(true);
   };
 
-  // Falta implementar
-  const handleAddPhotoToFavorites = () => {
-    // Los datos de la foto estan en "currentPhoto"
-
-    
-
-
+  const handleView2 = () => {
+    setView2(true);
   };
 
   useEffect(() => {
     const fetchPhotos = async () => {
-      let data = await api.controlAlbum.getPhotos({
+      let data = await api.controlAlbum.getAlbums({
         id: idUser,
       });
+      console.log(data);
 
       if (parseInt(data.status) === 1) {
-        setPhotos(data.info);
+        setAlbums(data.info);
       } else {
         console.log(data.message);
       }
@@ -62,25 +58,28 @@ export const AppScreen = () => {
               </div>
             </div>
 
-            <div className="px-4 py-3">
-              <h5 className="mb-0">Biography</h5>
-              <div className="p-4 rounded shadow-sm bg-light">{biografia}</div>
-            </div>
             <div className="py-4 px-4">
               <div className="d-flex align-items-center justify-content-between mb-3">
-                <h5 className="mb-0">Photos</h5>
+                <h5 className="mb-0">Albums</h5>
+                <span>
+                  <button
+                    onClick={() => handleView()}
+                    className="btn btn-success"
+                  >
+                    ADD
+                  </button>
+                  <button
+                    onClick={() => handleView2()}
+                    className="btn btn-danger"
+                  >
+                    Remove
+                  </button>
+                </span>
               </div>
               <div className="row ">
-                {photos.map((photo) => (
-                  <div
-                    className="col-lg-4 mb-2 pr-lg-1 app-image"
-                    onClick={() => handleViewPhoto(photo)}
-                  >
-                    <img
-                      src={photo.URL}
-                      alt={photo.descripcion}
-                      className="img-fluid rounded shadow-sm"
-                    />
+                {albums.map((album) => (
+                  <div className="col-lg-4 mb-2 pr-lg-1 app-image">
+                    <h3>{album.name}</h3>
                   </div>
                 ))}
               </div>
@@ -88,7 +87,6 @@ export const AppScreen = () => {
           </div>
         </div>
       </div>
-
       {/* Modal */}
       <div
         class="modal"
@@ -104,27 +102,59 @@ export const AppScreen = () => {
               width: "730px",
             }}
           >
+            <div className="modal-header">
+              <h3>Add new album</h3>
+            </div>
             <div class="modal-body">
-              <center>
-                <img
-                  src={currentPhoto.URL}
-                  alt={currentPhoto.descripcion}
-                  width={700}
-                />
-              </center>
-              <br />
-              <p>{currentPhoto.descripcion}</p>
+              <label htmlFor="">Name</label>
+              <input type="text" className="form-control" />
             </div>
             <div class="modal-footer">
-              <button
-                onClick={handleAddPhotoToFavorites}
-                type="button"
-                class="btn btn-danger"
-              >
-                Add to favorite
+              <button type="button" class="btn btn-success">
+                ADD
               </button>
               <button
                 onClick={() => setView(false)}
+                type="button"
+                class="btn btn-secondary"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Remove modal */}
+      <div
+        class="modal"
+        style={{
+          display: view2 ? "block" : "none",
+          backgroundColor: "#000000cf",
+        }}
+      >
+        <div class="modal-dialog">
+          <div
+            class="modal-content"
+            style={{
+              width: "730px",
+            }}
+          >
+            <div className="modal-header">
+              <h3>Remove album</h3>
+            </div>
+            <div class="modal-body">
+              <label htmlFor="">Name</label>
+              <select name="" id="" className="form-control">
+                <option value="">------</option>
+              </select>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger">
+                REMOVE
+              </button>
+              <button
+                onClick={() => setView2(false)}
                 type="button"
                 class="btn btn-secondary"
               >
