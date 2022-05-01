@@ -72,6 +72,14 @@ app.get('/oneDataUnion', verifyToken, ({ body}, res) => oneData('albumImg','idAl
 app.put('/newFav', verifyToken, ({ body}, res) => update('imagenes','idImg',body, res))
 app.put('/updatePass', verifyToken, ({ body}, res) => update('user','idUser',body, res))
 app.delete('/deleteAlbum', verifyToken, ({ body}, res) => deleteAlbum(body, res))
+app.post('/getFavoritesImages', verifyToken, ({ body}, res) => getFavoritesImages('imagenes',`idUserI = ${body.id} AND favorito = '1'`, res))
+app.post('/getAlbums', verifyToken, ({ body}, res) => getAlbums('album',`idUserA = '${body.id}'`, res))
+app.get('/getAlbums/:id', verifyToken, ({ params }, res) => getAlbumInfo('album',`idAlbum = '${params.id}'`, res))
+app.get('/getAlbums/:id/photos', verifyToken, ({ params }, res) => getAlbumPhotos(params.id, res))
+app.put('/userUpdateInfo', verifyToken, ({ body }, res) =>update('user','idUser', body, res))
+
+
+
 
 // Process the file upload and upload to Google Cloud Storage.
 app.post('/upload', multer.single('file'), (req, res, next) => {
@@ -174,6 +182,103 @@ const insertData = (table, names, values, res) => {
         res.json({message:error})
     }             
 };
+
+// Obetener las imagenes que guarden  como favoritos
+const getFavoritesImages = (table, filter, res) => {
+    try {  
+        const sql = `SELECT * FROM ${table} WHERE ${filter}`
+        console.log(`> Executing ${sql}`)
+        client.query(sql, (err, r) => {
+            if (err){
+                console.log(`! Error select from table ${table}`)
+                console.log(err)
+                return res.json({status:2}).status(500)
+            }
+    
+            console.log(`> Success select from table ${table}`)
+            console.log({status:1, info: r})
+            res.json({status:1, info:r})
+        })
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    }             
+};
+
+// Obetener  los albums del usuario
+const getAlbums = (table, filter, res) => {
+    try {  
+        const sql = `SELECT * FROM ${table} WHERE ${filter}`
+        console.log(`> Executing ${sql}`)
+        client.query(sql, (err, r) => {
+            if (err){
+                console.log(`! Error select from table ${table}`)
+                console.log(err)
+                return res.json({status:2}).status(500)
+            }
+    
+            console.log(`> Success select from table ${table}`)
+            console.log({status:1, info: r})
+            res.json({status:1, info:r})
+        })
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    }             
+};
+
+
+
+
+// Obetener la informacion de un album
+const getAlbumInfo = (table, filter, res) => {
+    try {  
+        const sql = `SELECT * FROM ${table} WHERE ${filter}`
+        console.log(`> Executing ${sql}`)
+        client.query(sql, (err, r) => {
+            if (err){
+                console.log(`! Error select from table ${table}`)
+                console.log(err)
+                return res.json({status:2}).status(500)
+            }
+    
+            console.log(`> Success select from table ${table}`)
+            console.log({status:1, info: r})
+            res.json({status:1, info:r})
+        })
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    }             
+};
+
+
+// Obetener las imagenes de un album
+const getAlbumPhotos = (idAlbum, res) => {
+    try {  
+        const sql = `SELECT imagenes.idImg, imagenes.descripcion, imagenes.favorito, imagenes.URL
+                     FROM albumImg
+                     JOIN imagenes ON imagenes.idImg = albumImg.idImgU
+                     WHERE idAlbumU = '${idAlbum}'`
+        console.log(`> Executing ${sql}`)
+        client.query(sql, (err, r) => {
+            if (err){
+                console.log(`! Error select from table albumImg `)
+                console.log(err)
+                return res.json({status:2}).status(500)
+            }
+    
+            console.log(`> Success select from table albumImg`)
+            console.log({status:1, info: r})
+            res.json({status:1, info:r})
+        })
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    }             
+};
+
+
 //updateData
 const update = (table, tableId, campos, res) => {
     try {  
@@ -197,38 +302,34 @@ const update = (table, tableId, campos, res) => {
 //deleteAlbum  
 const deleteAlbum = (datos, res) => {
     try {  
-        const sql = `DELETE FROM album WHERE idAlbum=${datos.id}`
+        const sql = `DELETE FROM album WHERE idAlbum = '${datos.id}'` 
+        const sql2 = `DELETE FROM albumImg WHERE idAlbumU = '${datos.id}'` 
+
         console.log(`> Executing ${sql}`)
+        // Eliminar el album
         client.query(sql, (err, r) => {
             if (err){
-                console.log(`! Error deleting to table union `)
+                console.log(`! Error delete from table album`)
+                console.log(err)
+                return res.json({status:2}).status(500)
+          }
+
+        // Desvincular las imagenes de ese album
+          client.query(sql2, (err, r) => {
+            if (err){
+                console.log(`! Error delete from table albumImg`)
                 console.log(err)
                 return res.json({status:2}).status(500)
             }
-            console.log(`> Success deleting to table union `)
-            console.log(r)
-            deleteUnion(datos.id, res)
-        })     
-    } catch (error) {
-        console.log(error)
-        res.json({message:error})
-    } 
-}
-//deleteUnion before delete album 
-const deleteUnion = (id, res) => {
-    try {  
-        const sql = `DELETE FROM albumImg WHERE idAlbumU=${id}`
-        console.log(`> Executing ${sql}`)
-        client.query(sql, (err, r) => {
-            if (err){
-                console.log(`! Error deleting to table album`)
-                console.log(err)
-                return res.json({status:2}).status(500)
-            }
-            console.log(`> Success deleting to table album`)
-            console.log(r)
-            res.json({status:1})
-        })     
+            console.log(`> Success delete to table albumImg`)
+            res.json({
+                info:r,
+                status:1
+            })
+        })   
+
+          
+        })   
     } catch (error) {
         console.log(error)
         res.json({message:error})
@@ -256,6 +357,7 @@ const oneData = (table, tableid, id, res) => {
         console.log(error)
     }   
 }
+
 const especial = ({ consulta }, res) => {
     const sql = consulta
     console.log(`> Executing ${sql}`)
