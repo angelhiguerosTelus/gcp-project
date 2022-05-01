@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSessionStorage } from "../../hooks/useSessionStorage";
+import Swal from "sweetalert2";
 import api from "../../api";
 
 export const AlbumScreen = () => {
   const [userData] = useSessionStorage("user", {});
   const [albums, setAlbums] = useState([]);
-  const [currentPhoto, setCurrentPhoto] = useState({});
+  const [newAlbum, setNewAlbum] = useState({});
+  const [albumToRemove, setAlbumToRemove] = useState({});
   const [view, setView] = useState(false);
   const [view2, setView2] = useState(false);
 
@@ -19,17 +21,47 @@ export const AlbumScreen = () => {
     setView2(true);
   };
 
+  const createAlbum = async () => {
+    let data = await api.controlAlbum.createNewAlbum({
+      values: [newAlbum, idUser],
+    });
+
+    if (parseInt(data.status) === 1) {
+      Swal.fire("Album created succesfully", "", "success").then(() => {
+        window.location.reload();
+      });
+    } else {
+      Swal.fire(data.message, "", "error");
+    }
+  };
+
+  const removeAlbum = async () => {
+    let data = await api.controlAlbum.removeAlbum({
+      id: albumToRemove,
+    });
+
+    if (parseInt(data.status) === 1) {
+      Swal.fire("Album deleted succesfully", "", "success").then(() => {
+        window.location.reload();
+      });
+    } else {
+      Swal.fire(data.message, "", "error");
+    }
+  };
+
   useEffect(() => {
     const fetchPhotos = async () => {
-      let data = await api.controlAlbum.getAlbums({
-        id: idUser,
-      });
-      console.log(data);
+      if (newAlbum !== "") {
+        let data = await api.controlAlbum.getAlbums({
+          id: idUser,
+        });
+        console.log(data);
 
-      if (parseInt(data.status) === 1) {
-        setAlbums(data.info);
-      } else {
-        console.log(data.message);
+        if (parseInt(data.status) === 1) {
+          setAlbums(data.info);
+        } else {
+          console.log(data.message);
+        }
       }
     };
     fetchPhotos();
@@ -78,9 +110,12 @@ export const AlbumScreen = () => {
               </div>
               <div className="row ">
                 {albums.map((album) => (
-                  <div className="col-lg-4 mb-2 pr-lg-1 app-image">
+                  <a
+                    href={`/album/${album.idAlbum}`}
+                    className=" album-card col-lg-4 mb-2"
+                  >
                     <h3>{album.name}</h3>
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>
@@ -107,10 +142,18 @@ export const AlbumScreen = () => {
             </div>
             <div class="modal-body">
               <label htmlFor="">Name</label>
-              <input type="text" className="form-control" />
+              <input
+                onChange={(e) => setNewAlbum(e.target.value)}
+                type="text"
+                className="form-control"
+              />
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-success">
+              <button
+                onClick={createAlbum}
+                type="button"
+                class="btn btn-success"
+              >
                 ADD
               </button>
               <button
@@ -144,13 +187,26 @@ export const AlbumScreen = () => {
               <h3>Remove album</h3>
             </div>
             <div class="modal-body">
-              <label htmlFor="">Name</label>
-              <select name="" id="" className="form-control">
-                <option value="">------</option>
+              <label htmlFor="">Select an album to remove</label>
+              <select
+                onChange={(e) => setAlbumToRemove(e.target.value)}
+                className="form-control"
+              >
+                <option value="-" selected disabled>
+                  --------
+                </option>
+                ;
+                {albums.map((album) => (
+                  <option value={album.idAlbum}>{album.name}</option>
+                ))}
               </select>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-danger">
+              <button
+                onClick={removeAlbum}
+                type="button"
+                class="btn btn-danger"
+              >
                 REMOVE
               </button>
               <button

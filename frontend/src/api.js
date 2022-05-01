@@ -28,11 +28,23 @@ const api = {
         body: JSON.stringify(params),
       });
     },
+    update(params) {
+      return callApi(`/userUpdateInfo`, {
+        method: "PUT",
+        body: JSON.stringify(params),
+      });
+    },
   },
   controlAlbum: {
     createNewAlbum(params) {
       return callApi(`/insertDataAlbum`, {
         method: "POST",
+        body: JSON.stringify(params),
+      });
+    },
+    removeAlbum(params) {
+      return callApi(`/deleteAlbum`, {
+        method: "DELETE",
         body: JSON.stringify(params),
       });
     },
@@ -49,9 +61,19 @@ const api = {
       });
     },
     getAlbums(params) {
-      return callApi(`/getAlbums`, {
+      return callApi(`/getAlbums/`, {
         method: "POST",
         body: JSON.stringify(params),
+      });
+    },
+    getAlbumInfo(params) {
+      return callApi(`/getAlbums/${params}`, {
+        method: "GET",
+      });
+    },
+    getAlbumPhotos(params) {
+      return callApi(`/getAlbums/${params}/photos`, {
+        method: "GET",
       });
     },
   },
