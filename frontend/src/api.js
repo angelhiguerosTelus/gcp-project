@@ -1,7 +1,10 @@
-const BASE_URL = "";
+
+const BASE_URL=''
+//let token= "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXN1bHQiOjIsImlhdCI6MTY1MTM3ODc2MywiZXhwIjoxNjUyNDE1NTYzfQ.xpw7lKNUktMNI6IqslErEeLctAC7s2sUisCOsCWXXdg"
 async function callApi(endpoint, options = {}) {
   options.headers = {
     "Content-Type": "application/json",
+   // "Authorization": "Bearer "+token,
     Accept: "application/json",
     "Access-Control-Allow-Origin": "http://localhost:3001",
     "Access-Control-Allow-Credentials": "true",
@@ -31,6 +34,14 @@ const api = {
     update(params) {
       return callApi(`/userUpdateInfo`, {
         method: "PUT",
+        body: JSON.stringify(params),
+      });
+    },
+  },
+  image: {
+    addImage(params) {
+      return callApi(`/insertDataImagen`, {
+        method: "POST",
         body: JSON.stringify(params),
       });
     },

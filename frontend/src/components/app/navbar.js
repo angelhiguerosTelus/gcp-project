@@ -29,6 +29,7 @@ export const Navbar = () => {
               </a>
             </li>
             <li className="nav-item">
+
               <a className="nav-link" href="/album">
                 Album
               </a>
@@ -43,6 +44,10 @@ export const Navbar = () => {
                 New images
               </a>
             </li>
+        </ul>
+        <button className='btn btn-danger btn-sg'>
+            Log out
+        </button>
           </ul>
           <a href="/profile" className="btn btn-primary">{userData.username}</a>
         </div>
