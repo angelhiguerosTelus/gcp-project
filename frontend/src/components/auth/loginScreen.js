@@ -7,7 +7,7 @@ import bg from "../../assets/img/background.png";
 
 export const LoginScreen = () => {
   const [values, handleInputChange, reset] = useForm({});
-  const [userData, setUserData] = useSessionStorage({});
+  const [userData, setUserData] = useSessionStorage('user', {});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
