@@ -11,18 +11,15 @@ export const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarText">
         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-            <a className="nav-link active" aria-current="page" href="/app">Home</a>
-            </li>
-            <li className="nav-item">
             <a className="nav-link" href="/app/images">New images</a>
             </li>
             <li className="nav-item">
             <a className="nav-link" href="/app">Album</a>
             </li>
         </ul>
-        <span className="navbar-text">
-           Here add logout or log in
-        </span>
+        <button className='btn btn-danger btn-sg'>
+            Log out
+        </button>
         </div>
     </div>
     </nav>

@@ -15,7 +15,12 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost')
     next()
 })
-app.use(cors())
+app.use(cors({
+    "origin": "*",
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
+  }))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 app.set('trust proxy', true)
@@ -61,9 +66,11 @@ app.post('/insertDataImagen', ({body}, res) => insertData('imagenes',names.image
 app.post('/insertDataAlbum', verifyToken, ({ body}, res) => insertData('album',names.album,body.values, res))
 app.post('/insertDataUnion', verifyToken, ({ body}, res) => insertData('albumImg',names.union,body.values, res))
 app.get('/oneDataImage', verifyToken, ({ body}, res) => oneData('imagenes','idUserI',body.id, res))
+app.get('/userData', verifyToken, ({ body}, res) => oneData('user','idUser',body.id, res))
 app.get('/oneDataAlbum', verifyToken, ({ body}, res) => oneData('album','idUserA',body.id, res))
 app.get('/oneDataUnion', verifyToken, ({ body}, res) => oneData('albumImg','idAlbumU',body.id, res))
 app.put('/newFav', verifyToken, ({ body}, res) => update('imagenes','idImg',body, res))
+app.put('/updatePass', verifyToken, ({ body}, res) => update('user','idUser',body, res))
 app.delete('/deleteAlbum', verifyToken, ({ body}, res) => deleteAlbum(body, res))
 
 // Process the file upload and upload to Google Cloud Storage.
@@ -159,8 +166,7 @@ const insertData = (table, names, values, res) => {
                 return res.json({status:2}).status(500)
             }
     
-            console.log(`> Success inserting to table ${table}`)
-            console.log({status:1, id:r.insertId})
+            console.log(`> Success inserting to table ${table}`+{status:1, id:r.insertId})
             res.json({status:1, id:r.insertId})
         })
     } catch (error) {
@@ -179,37 +185,55 @@ const update = (table, tableId, campos, res) => {
                 console.log(err)
                 return res.json({status:2}).status(500)
             }
-            console.log(`> Success inserting to table ${table}`)
+            console.log(`> Success updating to table ${table}`)
             console.log(r)
-            res.json(r)
+            res.json({status:1})
         })         
     } catch (error) {
         console.log(error)
-        res.json({message:error})
+        res.json({status:3})
     }             
 };
-//deleteAlbum
+//deleteAlbum  
 const deleteAlbum = (datos, res) => {
     try {  
-        const sql = `DELETE * FROM albumImg WHERE idAlbumU=${datos.id}`
+        const sql = `DELETE FROM album WHERE idAlbum=${datos.id}`
         console.log(`> Executing ${sql}`)
-       /*  client.query(sql, (err, r) => {
+        client.query(sql, (err, r) => {
             if (err){
-                console.log(`! Error updating to table ${table}`)
+                console.log(`! Error deleting to table union `)
                 console.log(err)
                 return res.json({status:2}).status(500)
             }
-            console.log(`> Success inserting to table ${table}`)
+            console.log(`> Success deleting to table union `)
             console.log(r)
-            res.json(r)
-        })   */       
-        res.json({message:'124'})
+            deleteUnion(datos.id, res)
+        })     
     } catch (error) {
         console.log(error)
         res.json({message:error})
     } 
 }
-
+//deleteUnion before delete album 
+const deleteUnion = (id, res) => {
+    try {  
+        const sql = `DELETE FROM albumImg WHERE idAlbumU=${id}`
+        console.log(`> Executing ${sql}`)
+        client.query(sql, (err, r) => {
+            if (err){
+                console.log(`! Error deleting to table album`)
+                console.log(err)
+                return res.json({status:2}).status(500)
+            }
+            console.log(`> Success deleting to table album`)
+            console.log(r)
+            res.json({status:1})
+        })     
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    } 
+}
 //obtener uno por alguna columna
 const oneData = (table, tableid, id, res) => {
     try {
@@ -260,7 +284,7 @@ function verifyToken(req, res, next){
       
       next()
     })
-  }
+}
 
 app.listen(3001, function(){
     console.log("nodejs running on 3001")
@@ -272,15 +296,18 @@ app.listen(3001, function(){
 
 favoritos imagen *
 
-
+Crear un álbum de fotos* Front
 eliminar album *
 
 
 cambiar password
 modificar sus datos
-editar nombre album
 
 eliminar cuenta
 quitar imagen de album
 
+
+const deleteAlbum = (datos, res) => {
+    try {  
+        const sql = `DELETE FROM album WHERE idAlbum=${datos.id}`
 */
