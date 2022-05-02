@@ -72,6 +72,8 @@ app.get('/oneDataUnion', verifyToken, ({ body}, res) => oneData('albumImg','idAl
 app.put('/newFav', verifyToken, ({ body}, res) => update('imagenes','idImg',body, res))
 app.put('/updatePass', verifyToken, ({ body}, res) => update('user','idUser',body, res))
 app.delete('/deleteAlbum', verifyToken, ({ body}, res) => deleteAlbum(body, res))
+app.delete('/deleteImageFromAlbum', verifyToken, ({ body}, res) => deleteImageFromAlbum(body, res))
+app.delete('/closeAccunt', verifyToken, ({ body}, res) => deleteAccount(body, res))
 app.post('/getFavoritesImages', verifyToken, ({ body}, res) => getFavoritesImages('imagenes',`idUserI = ${body.id} AND favorito = '1'`, res))
 app.post('/getAlbums', verifyToken, ({ body}, res) => getAlbums('album',`idUserA = '${body.id}'`, res))
 app.get('/getAlbums/:id', verifyToken, ({ params }, res) => getAlbumInfo('album',`idAlbum = '${params.id}'`, res))
@@ -216,7 +218,6 @@ const getAlbums = (table, filter, res) => {
                 console.log(err)
                 return res.json({status:2}).status(500)
             }
-    
             console.log(`> Success select from table ${table}`)
             console.log({status:1, info: r})
             res.json({status:1, info:r})
@@ -299,6 +300,62 @@ const update = (table, tableId, campos, res) => {
         res.json({status:3})
     }             
 };
+//deleteAccount
+const deleteAccount = (datos, res) => {
+    try {  
+        const sqlA = `SELECT idAlbum FROM album WHERE idUserA='${datos.id}'`                
+        console.log(`> Executing ${sqlA}`)
+        client.query(sqlA, (err, albumes) => {
+            if (err){
+                console.log(`! Error on delete table ${table}`)
+                console.log(err)
+                return res.json({status:2}).status(500)
+            }
+                albumes.forEach(element => {
+                    const sqlU = `DELETE FROM albumImg WHERE idAlbumU = '${element.idAlbum}'` 
+                    console.log(`> Executing ${sqlU}`)
+                    client.query(sqlU, (err, r1) => {
+                        if (err){
+                            console.log(`! Error on delete  table ${table}`)
+                            console.log(err)
+                            return res.json({status:2}).status(500)
+                        }         
+                    })
+                }); 
+                const sqlEA = `DELETE FROM album WHERE idUserA='${datos.id}'` 
+                console.log(`> Executing ${sqlEA}`)
+                client.query(sqlEA, (err, r2) => {
+                if (err){
+                    console.log(`! Error on delete table ${table}`)
+                    console.log(err)
+                    return res.json({status:2}).status(500)
+                }
+                    const sqlI = `DELETE FROM imagenes WHERE idUserI='${datos.id}'` 
+                    console.log(`> Executing ${sqlI}`)
+                    client.query(sqlI, (err, r3) => {
+                    if (err){
+                        console.log(`! Error on delete table ${table}`)
+                        console.log(err)
+                        return res.json({status:2}).status(500)
+                    }
+                        const sqlUs = `DELETE FROM user WHERE idUser='${datos.id}'` 
+                        console.log(`> Executing ${sqlUs}`)
+                        client.query(sqlUs, (err, r4) => {
+                        if (err){
+                            console.log(`! Error on delete table ${table}`)
+                            console.log(err)
+                            return res.json({status:2}).status(500)
+                        }
+                        res.json({status:1, message:'all deleted'})
+                        })                    
+                    })
+                })
+        })
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    } 
+}
 //deleteAlbum  
 const deleteAlbum = (datos, res) => {
     try {  
@@ -329,6 +386,28 @@ const deleteAlbum = (datos, res) => {
         })   
 
           
+        })   
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    } 
+}
+//deleteImageFromAlbum
+const deleteImageFromAlbum = (datos, res) => {
+    try {  
+        const sql = `DELETE FROM albumImg WHERE idAlbumU='${datos.idA}' and idImgU='${datos.idI}'`
+        console.log(`> Executing ${sql}`)
+        // Eliminar La union del album con img 
+        /client.query(sql, (err, r) => {
+            if (err){
+                console.log(`! Error delete from table albumImg`)
+                console.log(err)
+                return res.json({status:2}).status(500)
+          }
+          res.json({
+            info:r,
+            status:1
+            }) 
         })   
     } catch (error) {
         console.log(error)
@@ -396,10 +475,6 @@ app.listen(3001, function(){
 
 /*
 Darse de baja (eliminar cuenta) (⭐ Funcionalidad extra)
-Quitar una imágen de un álbum (⭐ Funcionalidad extra)
-
-Globalizar albums
-
 
 Agregar imágenes a un álbum
 Agregar imagenes a favoritos

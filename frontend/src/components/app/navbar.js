@@ -46,9 +46,6 @@ export const Navbar = () => {
             </li>
             </ul>        
           <a href="/profile" className="btn btn-primary">{userData.username}</a>
-          <button className='btn btn-danger btn-sg mx-3'>
-            Log out
-        </button>
         </div>
       </div>
     </nav>

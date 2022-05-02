@@ -31,6 +31,12 @@ const api = {
         body: JSON.stringify(params),
       });
     },
+    deleteAccount(params) {
+      return callApi(`/closeAccunt`, {
+        method: "DELETE",
+        body: JSON.stringify(params),
+      });
+    },
     update(params) {
       return callApi(`/userUpdateInfo`, {
         method: "PUT",
@@ -42,6 +48,12 @@ const api = {
     addImage(params) {
       return callApi(`/insertDataImagen`, {
         method: "POST",
+        body: JSON.stringify(params),
+      });
+    },
+    deleteFromalbum(params) {
+      return callApi(`/deleteImageFromAlbum`, {
+        method: "DELETE",
         body: JSON.stringify(params),
       });
     },
@@ -81,7 +93,7 @@ const api = {
       return callApi(`/getAlbums/${params}`, {
         method: "GET",
       });
-    },
+    },    
     getAlbumPhotos(params) {
       return callApi(`/getAlbums/${params}/photos`, {
         method: "GET",
