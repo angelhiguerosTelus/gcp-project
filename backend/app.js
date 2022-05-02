@@ -184,7 +184,30 @@ const insertData = (table, names, values, res) => {
         res.json({message:error})
     }             
 };
-
+/*
+const oneData = (table, tableid, id, res) => {
+    try {
+        axios
+        .post(api+'/getData', {
+            table,
+            id,
+            tableid
+            })
+        .then(result => {
+        console.log(result.data)
+        res.json({
+            info:result.data,
+            status:1
+        })
+        })
+        .catch((error)=>{res.status(400).json({status:2,message:error}); console.log(error)})   
+    } catch (error) {
+        res.status(400).json({Error:error, status:3})
+        console.log(error)
+    }   
+}
+*/
+//--------------------------------------------este toca
 // Obetener las imagenes que guarden  como favoritos
 const getFavoritesImages = (table, filter, res) => {
     try {  
@@ -206,7 +229,7 @@ const getFavoritesImages = (table, filter, res) => {
         res.json({message:error})
     }             
 };
-
+//--------------------------------------------este toca
 // Obetener  los albums del usuario
 const getAlbums = (table, filter, res) => {
     try {  
@@ -228,9 +251,7 @@ const getAlbums = (table, filter, res) => {
     }             
 };
 
-
-
-
+//--------------------------------------------este toca
 // Obetener la informacion de un album
 const getAlbumInfo = (table, filter, res) => {
     try {  
@@ -253,7 +274,7 @@ const getAlbumInfo = (table, filter, res) => {
     }             
 };
 
-
+//--------------------------------------------este toca
 // Obetener las imagenes de un album
 const getAlbumPhotos = (idAlbum, res) => {
     try {  
@@ -278,7 +299,6 @@ const getAlbumPhotos = (idAlbum, res) => {
         res.json({message:error})
     }             
 };
-
 
 //updateData
 const update = (table, tableId, campos, res) => {
@@ -474,11 +494,14 @@ app.listen(3001, function(){
 
 
 /*
-Darse de baja (eliminar cuenta) (⭐ Funcionalidad extra)
+falta cambiar el token
+verificar que todos los select de la bd se hagan por cloud function
+aplicar monitoring
+
+
 
 Agregar imágenes a un álbum
 Agregar imagenes a favoritos
 
 
-rutas privadas
 */
