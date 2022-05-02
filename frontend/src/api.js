@@ -37,6 +37,8 @@ const api = {
         body: JSON.stringify(params),
       });
     },
+<<<<<<< HEAD
+=======
   },
   image: {
     addImage(params) {
@@ -45,6 +47,7 @@ const api = {
         body: JSON.stringify(params),
       });
     },
+>>>>>>> 858e8998e0a703084296008ca0eef6e894aa89a4
   },
   controlAlbum: {
     createNewAlbum(params) {

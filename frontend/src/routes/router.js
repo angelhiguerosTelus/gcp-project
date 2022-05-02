@@ -8,7 +8,10 @@ import { FavoritesScreen } from '../components/app/favoritesScreen'
 import { AlbumScreen } from '../components/app/albumScreen'
 import { ProfileScreen } from '../components/app/ProfileScreen'
 import { AlbumImagesScreen } from '../components/app/albumImagesScreen'
+<<<<<<< HEAD
+=======
 import {Navbar} from '../components/app/navbar'
+>>>>>>> 858e8998e0a703084296008ca0eef6e894aa89a4
 
 export const Router = () => {
   return (
