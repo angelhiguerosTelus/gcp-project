@@ -23,7 +23,6 @@ const handleReset=()=>{
 } 
 const handleSubmit = async (e) => {
     e.preventDefault();    
-    let result=0
     const prov=datos.isfavorito===true?(1):(0)
     const data_to_save=[datos.description, parseInt(prov),1,2]
     console.log(datos)

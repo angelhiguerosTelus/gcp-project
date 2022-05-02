@@ -1,6 +1,6 @@
 import React from "react";
 import { useSessionStorage } from "../../hooks/useSessionStorage";
-
+import {  Link } from "react-router-dom";
 export const Navbar = () => {
   const [userData] = useSessionStorage("user", {});
 
@@ -24,32 +24,31 @@ export const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarText">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="/app">
+              <Link className="nav-link active" aria-current="page" to="/app">
                 Home
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
 
-              <a className="nav-link" href="/album">
+              <Link className="nav-link" to="/album">
                 Album
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/favorites">
+              <Link className="nav-link" to="/favorites">
                 Favorites
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/app/images">
+              <Link className="nav-link" to="/app/images">
                 New images
-              </a>
+              </Link>
             </li>
-        </ul>
-        <button className='btn btn-danger btn-sg'>
+            </ul>        
+          <a href="/profile" className="btn btn-primary">{userData.username}</a>
+          <button className='btn btn-danger btn-sg mx-3'>
             Log out
         </button>
-          </ul>
-          <a href="/profile" className="btn btn-primary">{userData.username}</a>
         </div>
       </div>
     </nav>

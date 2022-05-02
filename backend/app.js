@@ -16,10 +16,10 @@ app.use((req, res, next) => {
     next()
 })
 app.use(cors({
-    "origin": "*",
-    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-    "preflightContinue": false,
-    "optionsSuccessStatus": 204
+    origin: "*",
+    methods: ["GET,HEAD,PUT,PATCH,POST,DELETE"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
   }))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
@@ -65,8 +65,8 @@ app.post('/signin', ({ body }, res) => signin(body, res))
 app.post('/insertDataImagen', ({body}, res) => insertData('imagenes',names.image, body.values, res))
 app.post('/insertDataAlbum', verifyToken, ({ body}, res) => insertData('album',names.album,body.values, res))
 app.post('/insertDataUnion', verifyToken, ({ body}, res) => insertData('albumImg',names.union,body.values, res))
-app.get('/oneDataImage', verifyToken, ({ body}, res) => oneData('imagenes','idUserI',body.id, res))
-app.get('/userData', verifyToken, ({ body}, res) => oneData('user','idUser',body.id, res))
+app.post('/oneDataImage', verifyToken, ({ body}, res) => oneData('imagenes','idUserI',body.id, res))
+app.post('/userData', verifyToken, ({ body}, res) => oneData('user','idUser',body.id, res))
 app.get('/oneDataAlbum', verifyToken, ({ body}, res) => oneData('album','idUserA',body.id, res))
 app.get('/oneDataUnion', verifyToken, ({ body}, res) => oneData('albumImg','idAlbumU',body.id, res))
 app.put('/newFav', verifyToken, ({ body}, res) => update('imagenes','idImg',body, res))
@@ -395,21 +395,15 @@ app.listen(3001, function(){
 
 
 /*
+Darse de baja (eliminar cuenta) (⭐ Funcionalidad extra)
+Quitar una imágen de un álbum (⭐ Funcionalidad extra)
 
-favoritos imagen *
-
-Crear un álbum de fotos* Front
-eliminar album *
-
-
-cambiar password
-modificar sus datos
-
-eliminar cuenta
-quitar imagen de album
+Globalizar albums
 
 
-const deleteAlbum = (datos, res) => {
-    try {  
-        const sql = `DELETE FROM album WHERE idAlbum=${datos.id}`
+Agregar imágenes a un álbum
+Agregar imagenes a favoritos
+
+
+rutas privadas
 */

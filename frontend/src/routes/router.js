@@ -8,12 +8,14 @@ import { FavoritesScreen } from '../components/app/favoritesScreen'
 import { AlbumScreen } from '../components/app/albumScreen'
 import { ProfileScreen } from '../components/app/ProfileScreen'
 import { AlbumImagesScreen } from '../components/app/albumImagesScreen'
+import {Navbar} from '../components/app/navbar'
 
 export const Router = () => {
   return (
 
     <BrowserRouter >
     <div>
+        <Navbar/>
         <Switch>
             <Route exact path="/" component={LoginScreen} />
             <Route exact path="/signup" component={SignUpScreen} />
