@@ -18,6 +18,19 @@ export const AlbumImagesScreen = ({ match: { params } }) => {
     setCurrentPhoto(photo);
     setView(true);
   };
+  const handleQuitFromAlbum= async() => {
+    let tempArray=[]
+    let data = await api.image.deleteFromalbum({idA:idAlbum,idI:currentPhoto.idImg});
+    if (data.status===1) {
+      photos.forEach((element)=>(
+        parseInt(element.idImg)!==parseInt(currentPhoto.idImg)&&(tempArray.push(element), console.log(element))      
+      ))
+      setPhotos(tempArray)
+      Swal.fire('Done.', "", "success");    
+  } else {
+      Swal.fire('Something bad happen on the server (main)', "", "error");
+  }          
+  };
 
   const handleAddPhotoToFavorites = async () => {
     let data = await api.image.addFavorite({
@@ -85,7 +98,8 @@ export const AlbumImagesScreen = ({ match: { params } }) => {
                 {photos.map((photo) => (
                   <div
                     className="col-lg-4 mb-2 pr-lg-1 app-image"
-                    onClick={() => handleViewPhoto(photo)}
+                    onClick={() => handleViewPhoto(photo)}  
+                    key={photo.idImg}                  
                   >
                     <img
                       src={photo.URL}
@@ -101,20 +115,20 @@ export const AlbumImagesScreen = ({ match: { params } }) => {
       </div>
       {/* Modal */}
       <div
-        class="modal"
+        className="modal"
         style={{
           display: view ? "block" : "none",
           backgroundColor: "#000000cf",
         }}
       >
-        <div class="modal-dialog">
+        <div className="modal-dialog">
           <div
-            class="modal-content"
+            className="modal-content"
             style={{
               width: "730px",
             }}
           >
-            <div class="modal-body">
+            <div className="modal-body">
               <center>
                 <img
                   src={currentPhoto.URL}
@@ -126,6 +140,13 @@ export const AlbumImagesScreen = ({ match: { params } }) => {
               <p>{currentPhoto.descripcion}</p>
             </div>
             <div class="modal-footer">
+              <button
+                onClick={handleQuitFromAlbum}
+                type="button"
+                className="btn btn-danger"
+              >
+                Quit from this album
+              </button>
               {currentPhoto.favorito === 1 ? (
                 <button
                   onClick={handleRemovePhotoFromFavorites}
@@ -146,7 +167,7 @@ export const AlbumImagesScreen = ({ match: { params } }) => {
               <button
                 onClick={() => setView(false)}
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
               >
                 Close
               </button>

@@ -1,11 +1,13 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import img from '../images/addimages.png'
 import ImageUploading from 'react-images-uploading';
 import Swal from "sweetalert2";
 import api from "../../api";
 export const AddImages = () => {
+    const idUser=JSON.parse(sessionStorage.getItem('user')).idUser
     const apilink=process.env.REACT_APP_BACK
-    const [images, setImages] = React.useState([]);
+    const [images, setImages] = useState([]);
+    const [oldAlbum, setOldAlbum] = useState([]);
     const [datos, setDatos]=useState({
                                         description:"",
                                         nameAlbum:"",
@@ -23,8 +25,9 @@ const handleReset=()=>{
 } 
 const handleSubmit = async (e) => {
     e.preventDefault();    
-    const prov=datos.isfavorito===true?(1):(0)
-    const data_to_save=[datos.description, parseInt(prov),1,2]
+    console.log(datos)
+     const prov=datos.isfavorito===true?(1):(0)
+    const data_to_save=[datos.description, parseInt(prov),1,idUser]
     console.log(datos)
     if (images.length===0) {
         Swal.fire('There is no image to upload', "", "error");
@@ -32,7 +35,10 @@ const handleSubmit = async (e) => {
     } else if (datos.newAlbum===true && datos.nameAlbum===""){
         Swal.fire('Add name of the new album', "", "error");
         return            
-    }      
+    }else if (datos.nameAlbum==="0"){
+        Swal.fire('Select valid album', "", "error");
+        return            
+    }     
     try {
         const data = new FormData()
         data.append('file', images[0].file)
@@ -73,7 +79,7 @@ const handleSubmit = async (e) => {
                 data = await api.controlAlbum.createNewAlbum({
                     values: [
                       datos.nameAlbum,
-                      2
+                      idUser
                     ],
                   });          
                   union[0]=data.id
@@ -99,6 +105,16 @@ const handleSubmit = async (e) => {
         }
        
     }
+    useEffect(() => {
+        // Get albums
+        const fetchAlbum = async () => {
+            let data = await api.controlAlbum.getAlbums({
+                id: idUser,
+              });
+              setOldAlbum(data.info) 
+        };
+        fetchAlbum();        
+      }, []);
   return (
     <div className="container-fluid">
         <div className='row'>
@@ -174,10 +190,8 @@ const handleSubmit = async (e) => {
                         <div className='form-check form-switch d-flex justify-content-center w-100 my-5'>                   
                             <div className="form-floating mb-3 w-100">
                             <select className="form-select form-select-sm" onChange={(e)=> setDatos({ ...datos, nameAlbum:e.target.value })}>
-                                <option value='0' >add to album?</option>
-                                <option value="1">Need to be implement</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                            <option value='0'>add to album?</option>                                
+                                {oldAlbum.map((element)=>{return <option key={element.idAlbum} value={element.idAlbum}>{element.name}</option>})}                                
                             </select>
                             </div>
                             </div>  
