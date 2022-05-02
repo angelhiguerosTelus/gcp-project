@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend-deployment
+  template:
+    metadata:
+      labels:
+        app: backend-deployment
+    spec:
+      containers:
+        - name: backend
+          image: umgtato/finalproject:latest
+          ports:
+            - containerPort: 3001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-backend
+  labels:
+    app: backend-deployment
+spec:
+  type: LoadBalancer
+  selector:
+    app: backend-deployment
+  ports:
+    - port: 80
+      targetPort: 3001
+      protocol: TCP

@@ -6,7 +6,23 @@
 
 
 # Google Kubernetes Engine (Deployment)
+```sh
+# Deploy del frontend
+npm run build
 
+# Crear imagen de docker, ejecucion del contenedor para prueba local y subirlo al hub docker
+docker build -t umgtato/finalproject .   
+docker run -d -p 3001:3001 --name final umgtato/finalproject
+docker push umgtato/finalproject:v1
+
+#configuracion del GKE
+gcloud config set compute/zone us-central1-a 
+gcloud container clusters create cluster-final --num-nodes=3
+touch deployment.yml
+#pegar configuracion de docker.
+nano deployment.yml 
+kubectl apply -f deployment.yml
+```
 
 
 # Google Engine y Network Balancer (Deployment)
