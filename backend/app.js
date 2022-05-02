@@ -251,7 +251,9 @@ const getAlbums = (table, filter, res) => {
     }             
 };
 
+
 //--------------------------------------------este toca
+
 // Obetener la informacion de un album
 const getAlbumInfo = (table, filter, res) => {
     try {  

@@ -32,8 +32,21 @@ export const AlbumImagesScreen = ({ match: { params } }) => {
   }          
   };
 
-  const handleAddPhotoToFavorites = () => {
-    // Los datos de la foto estan en "currentPhoto"
+  const handleAddPhotoToFavorites = async () => {
+    let data = await api.image.addFavorite({
+      id: currentPhoto.idImg,
+      data: `favorito = '1'`,
+    });
+    setCurrentPhoto((prev) => ({ ...prev, favorito: 1 }));
+  };
+
+  const handleRemovePhotoFromFavorites = async () => {
+    let data = await api.image.addFavorite({
+      id: currentPhoto.idImg,
+      data: `favorito = '0'`,
+    });
+
+    setCurrentPhoto((prev) => ({ ...prev, favorito: 0 }));
   };
 
   useEffect(() => {
@@ -49,7 +62,7 @@ export const AlbumImagesScreen = ({ match: { params } }) => {
       let data = await api.controlAlbum.getAlbumPhotos(idAlbum);
       setPhotos(data.info);
     };
-    fetchPhotos()
+    fetchPhotos();
   }, []);
 
   return (
@@ -126,21 +139,31 @@ export const AlbumImagesScreen = ({ match: { params } }) => {
               <br />
               <p>{currentPhoto.descripcion}</p>
             </div>
-            <div className="modal-footer">
-            <button
+            <div class="modal-footer">
+              <button
                 onClick={handleQuitFromAlbum}
                 type="button"
                 className="btn btn-danger"
               >
                 Quit from this album
               </button>
-              <button
-                onClick={handleAddPhotoToFavorites}
-                type="button"
-                className="btn btn-danger"
-              >
-                Add to favorite
-              </button>
+              {currentPhoto.favorito === 1 ? (
+                <button
+                  onClick={handleRemovePhotoFromFavorites}
+                  type="button"
+                  class="btn btn-warning"
+                >
+                  Remove from favorites
+                </button>
+              ) : (
+                <button
+                  onClick={handleAddPhotoToFavorites}
+                  type="button"
+                  class="btn btn-danger"
+                >
+                  Add to favorite
+                </button>
+              )}
               <button
                 onClick={() => setView(false)}
                 type="button"
