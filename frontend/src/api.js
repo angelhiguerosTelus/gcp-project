@@ -1,11 +1,14 @@
-const BASE_URL = "";
+
+const BASE_URL=""
+let token= "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXN1bHQiOjIsImlhdCI6MTY1MTM3ODc2MywiZXhwIjoxNjUyNDE1NTYzfQ.xpw7lKNUktMNI6IqslErEeLctAC7s2sUisCOsCWXXdg"
 async function callApi(endpoint, options = {}) {
   options.headers = {
     "Content-Type": "application/json",
+    "Authorization": "Bearer "+token,
     Accept: "application/json",
     "Access-Control-Allow-Origin": "http://localhost:3001",
     "Access-Control-Allow-Credentials": "true",
-    Authorization: `Bearer: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXN1bHQiOjIsImlhdCI6MTY1MTI2OTE4OCwiZXhwIjoxNjUyMzA1OTg4fQ.8FyTgqUK3L7X287MRQJhpQ4kqyeZ3i4h-m2dXw5vU0o`,
+    //Authorization: `Bearer: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXN1bHQiOjIsImlhdCI6MTY1MTI2OTE4OCwiZXhwIjoxNjUyMzA1OTg4fQ.8FyTgqUK3L7X287MRQJhpQ4kqyeZ3i4h-m2dXw5vU0o`,
   };
   options.credentials = "include";
   const url = BASE_URL + endpoint;
@@ -34,6 +37,17 @@ const api = {
         body: JSON.stringify(params),
       });
     },
+<<<<<<< HEAD
+=======
+  },
+  image: {
+    addImage(params) {
+      return callApi(`/insertDataImagen`, {
+        method: "POST",
+        body: JSON.stringify(params),
+      });
+    },
+>>>>>>> 858e8998e0a703084296008ca0eef6e894aa89a4
   },
   controlAlbum: {
     createNewAlbum(params) {

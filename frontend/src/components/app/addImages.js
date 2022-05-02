@@ -7,11 +7,11 @@ export const AddImages = () => {
     const apilink=process.env.REACT_APP_BACK
     const [images, setImages] = React.useState([]);
     const [datos, setDatos]=useState({
-        description:"",
-        nameAlbum:"",
-        isfavorito:false,
-        newAlbum:false,
-    })
+                                        description:"",
+                                        nameAlbum:"",
+                                        isfavorito:false,
+                                        newAlbum:false,
+                                    })
 const onChange = (imageList, addUpdateIndex) => {
     console.log(imageList, addUpdateIndex);
     setImages(imageList);
@@ -21,46 +21,8 @@ const handleReset=()=>{
     setDatos({ description:"", nameAlbum:"", isfavorito:false, newAlbum:false})
     setImages([])
 } 
-const saveInAlbum=async(id)=>{
-    let data=[]
-    let data2=[]
-    let union=[datos.nameAlbum,id]
-    try {
-        if (datos.newAlbum===true && datos.nameAlbum!=="") {
-            data = await api.controlAlbum.createNewAlbum({
-                values: [
-                  datos.nameAlbum,
-                  2
-                ],
-              });          
-              union[0]=data.id
-            console.log('album nuevo creado: '+datos.nameAlbum+" id:"+data.id)
-        }
-
-        data2 = await api.union.insert({
-            values: [
-              datos.nameAlbum,
-              2
-            ],
-          });          
-          console.log('union creada: album id'+datos.nameAlbum+" union id:"+data2.id)
-        if (parseInt(data2.status) === 1) {
-            Swal.fire("User created successfuly", "", "success");
-            handleReset()
-          } else {
-            Swal.fire('cannot add image to album', "", "error");
-            return
-          }        
-    } catch (error) {
-        Swal.fire('Something bad happen on the server (album)', "", "error");
-        console.log(error)
-        return 
-    }
-   
-}
 const handleSubmit = async (e) => {
     e.preventDefault();    
-    let result=0
     const prov=datos.isfavorito===true?(1):(0)
     const data_to_save=[datos.description, parseInt(prov),1,2]
     console.log(datos)
@@ -83,29 +45,60 @@ const handleSubmit = async (e) => {
         return
     }  
     try {
-        const saveImage= await fetch(apilink+'/insertDataImagen',{
-            method:'POST',
-            headers: {'Content-Type': 'application/json',
-                        "Authorization": `Bearer: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXN1bHQiOjIsImlhdCI6MTY1MTI2OTE4OCwiZXhwIjoxNjUyMzA1OTg4fQ.8FyTgqUK3L7X287MRQJhpQ4kqyeZ3i4h-m2dXw5vU0o`}, 
-            body:JSON.stringify({values:data_to_save})
-        })
-        result= await saveImage.json()         
+       const result = await api.image.addImage({values:data_to_save,});      
         if (result.status===2) {
             Swal.fire('Something bad happen on the server (main)', "", "error");
             return
         } 
+        if (datos.nameAlbum!=="") {
+            saveInAlbum(result.id)              
+           } else {
+            Swal.fire("Image added successfuly", "", "success")
+            handleReset()
+           }
     } catch (error) {
         Swal.fire('Something bad happen on the server (main)', "", "error");
         console.log(error)
         return
     }                            
-       if (datos.nameAlbum!=="") {
-        saveInAlbum(result.id)      
-       } else {
-        Swal.fire("Image added successfuly", "", "success")
-        handleReset()
-       }
+       
     };
+
+    const saveInAlbum=async(id)=>{
+        let data=[]
+        let data2=[]
+        let union=[datos.nameAlbum,id]
+        try {
+            if (datos.newAlbum===true && datos.nameAlbum!=="") {
+                data = await api.controlAlbum.createNewAlbum({
+                    values: [
+                      datos.nameAlbum,
+                      2
+                    ],
+                  });          
+                  union[0]=data.id
+                console.log('album nuevo creado: '+datos.nameAlbum+" id:"+data.id)
+            }
+            data2 = await api.union.insert({
+                values: 
+                  union
+                ,
+              });          
+              console.log('union creada: album id '+union[0]+" union id:"+data2.id)
+            if (parseInt(data2.status) === 1) {
+                Swal.fire("User created successfuly", "", "success");
+                handleReset()
+              } else {
+                Swal.fire('cannot add image to album', "", "error");
+                return
+              }        
+        } catch (error) {
+            Swal.fire('Something bad happen on the server (album)', "", "error");
+            console.log(error)
+            return 
+        }
+       
+    }
   return (
     <div className="container-fluid">
         <div className='row'>
