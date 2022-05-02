@@ -227,9 +227,6 @@ const getAlbums = (table, filter, res) => {
     }             
 };
 
-
-
-
 // Obetener la informacion de un album
 const getAlbumInfo = (table, filter, res) => {
     try {  

@@ -5,6 +5,7 @@ import api from "../../api";
 
 export const AlbumScreen = () => {
   const [userData] = useSessionStorage("user", {});
+  const [albumList, setAlbumList] = useSessionStorage("albums", {});
   const [albums, setAlbums] = useState([]);
   const [newAlbum, setNewAlbum] = useState({});
   const [albumToRemove, setAlbumToRemove] = useState({});
@@ -51,17 +52,15 @@ export const AlbumScreen = () => {
 
   useEffect(() => {
     const fetchPhotos = async () => {
-      if (newAlbum !== "") {
-        let data = await api.controlAlbum.getAlbums({
-          id: idUser,
-        });
-        console.log(data);
+      let data = await api.controlAlbum.getAlbums({
+        id: idUser,
+      });
 
-        if (parseInt(data.status) === 1) {
-          setAlbums(data.info);
-        } else {
-          console.log(data.message);
-        }
+      if (parseInt(data.status) === 1) {
+        setAlbums(data.info);
+        setAlbumList(data.info);
+      } else {
+        console.log(data.message);
       }
     };
     fetchPhotos();

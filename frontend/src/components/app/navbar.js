@@ -1,8 +1,13 @@
 import React from "react";
 import { useSessionStorage } from "../../hooks/useSessionStorage";
-import {  Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 export const Navbar = () => {
   const [userData] = useSessionStorage("user", {});
+
+  const handleLogout = () => {
+    userData({});
+    window.location.href = "/";
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -29,7 +34,6 @@ export const Navbar = () => {
               </Link>
             </li>
             <li className="nav-item">
-
               <Link className="nav-link" to="/album">
                 Album
               </Link>
@@ -44,11 +48,13 @@ export const Navbar = () => {
                 New images
               </Link>
             </li>
-            </ul>        
-          <a href="/profile" className="btn btn-primary">{userData.username}</a>
-          <button className='btn btn-danger btn-sg mx-3'>
+          </ul>
+          <a href="/profile" className="btn btn-primary">
+            {userData.username}
+          </a>
+          <button onClick={handleLogout} className="btn btn-danger btn-sg mx-3">
             Log out
-        </button>
+          </button>
         </div>
       </div>
     </nav>
