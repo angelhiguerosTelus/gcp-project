@@ -1,14 +1,28 @@
 const BASE_URL = "";
-let token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXN1bHQiOjIsImlhdCI6MTY1MTM3ODc2MywiZXhwIjoxNjUyNDE1NTYzfQ.xpw7lKNUktMNI6IqslErEeLctAC7s2sUisCOsCWXXdg";
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(";");
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == " ") {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 async function callApi(endpoint, options = {}) {
   options.headers = {
     "Content-Type": "application/json",
-    Authorization: "Bearer " + token,
+    Authorization: "Bearer " + getCookie('token'),
     Accept: "application/json",
     "Access-Control-Allow-Origin": "http://localhost:3001",
     "Access-Control-Allow-Credentials": "true",
-    //Authorization: `Bearer: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXN1bHQiOjIsImlhdCI6MTY1MTI2OTE4OCwiZXhwIjoxNjUyMzA1OTg4fQ.8FyTgqUK3L7X287MRQJhpQ4kqyeZ3i4h-m2dXw5vU0o`,
   };
   options.credentials = "include";
   const url = BASE_URL + endpoint;
@@ -57,6 +71,12 @@ const api = {
         body: JSON.stringify(params),
       });
     },
+    deleteFromalbum(params) {
+      return callApi(`/deleteImageFromAlbumWithoutId`, {
+        method: "DELETE",
+        body: JSON.stringify(params),
+      });
+    },
     addFavorite(params) {
       return callApi(`/newFav`, {
         method: "PUT",
@@ -99,7 +119,7 @@ const api = {
       return callApi(`/getAlbums/${params}`, {
         method: "GET",
       });
-    },    
+    },
     getAlbumPhotos(params) {
       return callApi(`/getAlbums/${params}/photos`, {
         method: "GET",

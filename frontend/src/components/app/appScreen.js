@@ -37,6 +37,10 @@ export const AppScreen = () => {
   };
 
   const handleAddPhotoToAlbum = async() => {
+  
+    await api.image.deleteFromalbum({
+      idI: currentPhoto.idImg,
+    })
 
     let dat = await api.union.insert({
       values: [album, currentPhoto.idImg]

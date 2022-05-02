@@ -73,6 +73,9 @@ app.put('/newFav', verifyToken, ({ body}, res) => update('imagenes','idImg',body
 app.put('/updatePass', verifyToken, ({ body}, res) => update('user','idUser',body, res))
 app.delete('/deleteAlbum', verifyToken, ({ body}, res) => deleteAlbum(body, res))
 app.delete('/deleteImageFromAlbum', verifyToken, ({ body}, res) => deleteImageFromAlbum(body, res))
+app.delete('/deleteImageFromAlbumWithoutId', verifyToken, ({ body}, res) => deleteImageFromAlbumWithoutId(body, res))
+
+
 app.delete('/closeAccunt', verifyToken, ({ body}, res) => deleteAccount(body, res))
 app.post('/getFavoritesImages', verifyToken, ({ body}, res) => getFavoritesImages('imagenes',`idUserI = ${body.id} AND favorito = '1'`, res))
 app.post('/getAlbums', verifyToken, ({ body}, res) => getAlbums('album',`idUserA = '${body.id}'`, res))
@@ -436,6 +439,30 @@ const deleteImageFromAlbum = (datos, res) => {
         res.json({message:error})
     } 
 }
+
+const deleteImageFromAlbumWithoutId = (datos, res) => {
+    try {  
+        const sql = `DELETE FROM albumImg WHERE idImgU='${datos.idI}'`
+        console.log(`> Executing ${sql}`)
+        // Eliminar La union del album con img 
+        /client.query(sql, (err, r) => {
+            if (err){
+                console.log(`! Error delete from table albumImg`)
+                console.log(err)
+                return res.json({status:2}).status(500)
+          }
+          res.json({
+            info:r,
+            status:1
+            }) 
+        })   
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    } 
+}
+
+
 //obtener uno por alguna columna
 const oneData = (table, tableid, id, res) => {
     try {
