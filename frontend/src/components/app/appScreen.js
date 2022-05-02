@@ -117,20 +117,20 @@ export const AppScreen = () => {
 
       {/* Modal */}
       <div
-        class="modal"
+        className="modal"
         style={{
           display: view ? "block" : "none",
           backgroundColor: "#000000cf",
         }}
       >
-        <div class="modal-dialog">
+        <div className="modal-dialog">
           <div
-            class="modal-content"
+            className="modal-content"
             style={{
               width: "730px",
             }}
           >
-            <div class="modal-body">
+            <div className="modal-body">
               <center>
                 <img
                   src={currentPhoto.URL}
@@ -141,11 +141,11 @@ export const AppScreen = () => {
               <br />
               <p>{currentPhoto.descripcion}</p>
             </div>
-            <div class="modal-footer">
+            <div className="modal-footer">
               <button
                 onClick={() => setViewAlbum((prev) => !prev)}
                 type="button"
-                class="btn btn-primary"
+                className="btn btn-primary"
               >
                 Add to album
               </button>
@@ -153,7 +153,7 @@ export const AppScreen = () => {
                 <button
                   onClick={handleRemovePhotoFromFavorites}
                   type="button"
-                  class="btn btn-warning"
+                  className="btn btn-warning"
                 >
                   Remove from favorites
                 </button>
@@ -161,7 +161,7 @@ export const AppScreen = () => {
                 <button
                   onClick={handleAddPhotoToFavorites}
                   type="button"
-                  class="btn btn-danger"
+                  className="btn btn-danger"
                 >
                   Add to favorite
                 </button>
@@ -170,7 +170,7 @@ export const AppScreen = () => {
               <button
                 onClick={() => setView(false)}
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
               >
                 Close
               </button>

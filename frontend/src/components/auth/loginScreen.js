@@ -41,13 +41,13 @@ export const LoginScreen = () => {
   return (
     <>
       <div
-        class="sidenav"
+        className="sidenav"
         style={{
           background: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${bg})`,
           backgroundColor: "black",
         }}
       >
-        <div class="login-main-text">
+        <div className="login-main-text">
           <h1>
             GCP
             <br /> Project
@@ -55,37 +55,37 @@ export const LoginScreen = () => {
           <p>Login or register from here to access.</p>
         </div>
       </div>
-      <div class="main">
-        <div class="col-md-6 col-sm-12">
-          <div class="login-form">
+      <div className="main">
+        <div className="col-md-6 col-sm-12">
+          <div className="login-form">
             <form onSubmit={handleSubmit}>
-              <div class="form-group">
+              <div className="form-group">
                 <label>User Name</label>
                 <input
                   name="username"
                   onChange={handleInputChange}
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   required
                   placeholder="User Name"
                 />
               </div>
-              <div class="form-group">
+              <div className="form-group">
                 <label>Password</label>
                 <input
                   name="password"
                   onChange={handleInputChange}
                   type="password"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Password"
                   required
                 />
               </div>
               <br />
-              <button type="submit" class="btn btn-black text-white">
+              <button type="submit" className="btn btn-black text-white">
                 Login
               </button>
-              <a href="/signup" class="btn btn-secondary">
+              <a href="/signup" className="btn btn-secondary">
                 Register
               </a>
             </form>

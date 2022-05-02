@@ -3,7 +3,6 @@ import { useSessionStorage } from "../../hooks/useSessionStorage";
 import { Link } from "react-router-dom";
 export const Navbar = () => {
   const [userData, setUserData] = useSessionStorage("user", {});
-
   const handleLogout = () => {
     setUserData({});
     window.location.href = "/";

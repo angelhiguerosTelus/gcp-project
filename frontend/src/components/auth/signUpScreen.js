@@ -32,13 +32,13 @@ export const SignUpScreen = () => {
   return (
     <>
       <div
-        class="sidenav"
+        className="sidenav"
         style={{
           background: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${bg})`,
           backgroundColor: "black",
         }}
       >
-        <div class="login-main-text">
+        <div className="login-main-text">
           <h1>
             GCP
             <br /> Project
@@ -46,70 +46,70 @@ export const SignUpScreen = () => {
           <p>Login or register from here to access.</p>
         </div>
       </div>
-      <div class="main">
-        <div class="col-md-6 col-sm-12">
-          <div class="login-form">
+      <div className="main">
+        <div className="col-md-6 col-sm-12">
+          <div className="login-form">
             <form onSubmit={handleSubmit}>
-              <div class="form-group">
+              <div className="form-group">
                 <label>Name</label>
                 <input
                   name="name"
                   onChange={handleInputChange}
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   required
                   placeholder="Name"
                 />
               </div>
-              <div class="form-group">
+              <div className="form-group">
                 <label>Username</label>
                 <input
                   name="username"
                   onChange={handleInputChange}
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   required
                   placeholder="Username"
                 />
               </div>
-              <div class="form-group">
+              <div className="form-group">
                 <label>Password</label>
                 <input
                   name="password"
                   onChange={handleInputChange}
                   type="password"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Password"
                   required
                 />
               </div>
-              <div class="form-group">
+              <div className="form-group">
                 <label>Biography</label>
                 <input
                   name="biography"
                   onChange={handleInputChange}
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   required
                   placeholder="Biography"
                 />
               </div>
-              <div class="form-group">
+              <div className="form-group">
                 <label>Gravatar</label>
                 <input
                   name="gravatar"
                   onChange={handleInputChange}
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   required
                   placeholder="Gravatar link"
                 />
               </div>
               <br />
-              <button type="submit" class="btn btn-black text-white">
+              <button type="submit" className="btn btn-black text-white">
                 Register
               </button>
-              <a href="/" class="btn btn-secondary">
+              <a href="/" className="btn btn-secondary">
                 Go back
               </a>
             </form>

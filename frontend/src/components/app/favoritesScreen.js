@@ -87,20 +87,20 @@ export const FavoritesScreen = () => {
 
       {/* Modal */}
       <div
-        class="modal"
+        className="modal"
         style={{
           display: view ? "block" : "none",
           backgroundColor: "#000000cf",
         }}
       >
-        <div class="modal-dialog">
+        <div className="modal-dialog">
           <div
-            class="modal-content"
+            className="modal-content"
             style={{
               width: "730px",
             }}
           >
-            <div class="modal-body">
+            <div className="modal-body">
               <center>
                 <img
                   src={currentPhoto.URL}
@@ -111,18 +111,18 @@ export const FavoritesScreen = () => {
               <br />
               <p>{currentPhoto.descripcion}</p>
             </div>
-            <div class="modal-footer">
+            <div className="modal-footer">
               <button
                 onClick={handleRemovePhotoFromFavorites}
                 type="button"
-                class="btn btn-warning"
+                className="btn btn-warning"
               >
                 Remove from favorites
               </button>
               <button
                 onClick={() => setView(false)}
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
               >
                 Close
               </button>
