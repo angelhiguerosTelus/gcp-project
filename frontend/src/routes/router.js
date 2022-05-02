@@ -19,7 +19,7 @@ export const Router = () => {
       }) => (
         <Route
           {...rest}
-          render={props =>userD.idUser===0? (
+          render={props =>(userD.idUser===0  || String(userD.idUser)==='undefined')? (
               <Redirect to="/login" />
             ) : (
               <Component {...props} />

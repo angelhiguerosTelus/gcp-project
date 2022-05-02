@@ -139,7 +139,7 @@ export const AlbumImagesScreen = ({ match: { params } }) => {
               <br />
               <p>{currentPhoto.descripcion}</p>
             </div>
-            <div class="modal-footer">
+            <div className="modal-footer">
               <button
                 onClick={handleQuitFromAlbum}
                 type="button"
@@ -151,7 +151,7 @@ export const AlbumImagesScreen = ({ match: { params } }) => {
                 <button
                   onClick={handleRemovePhotoFromFavorites}
                   type="button"
-                  class="btn btn-warning"
+                  className="btn btn-warning"
                 >
                   Remove from favorites
                 </button>
@@ -159,7 +159,7 @@ export const AlbumImagesScreen = ({ match: { params } }) => {
                 <button
                   onClick={handleAddPhotoToFavorites}
                   type="button"
-                  class="btn btn-danger"
+                  className="btn btn-danger"
                 >
                   Add to favorite
                 </button>

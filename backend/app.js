@@ -74,10 +74,10 @@ app.put('/updatePass', verifyToken, ({ body}, res) => update('user','idUser',bod
 app.delete('/deleteAlbum', verifyToken, ({ body}, res) => deleteAlbum(body, res))
 app.delete('/deleteImageFromAlbum', verifyToken, ({ body}, res) => deleteImageFromAlbum(body, res))
 app.delete('/closeAccunt', verifyToken, ({ body}, res) => deleteAccount(body, res))
-app.post('/getFavoritesImages', verifyToken, ({ body}, res) => getFavoritesImages('imagenes',`idUserI = ${body.id} AND favorito = '1'`, res))
-app.post('/getAlbums', verifyToken, ({ body}, res) => getAlbums('album',`idUserA = '${body.id}'`, res))
-app.get('/getAlbums/:id', verifyToken, ({ params }, res) => getAlbumInfo('album',`idAlbum = '${params.id}'`, res))
-app.get('/getAlbums/:id/photos', verifyToken, ({ params }, res) => getAlbumPhotos(params.id, res))
+app.post('/getFavoritesImages', verifyToken, ({ body}, res) => oneData2('imagenes',`idUserI = ${body.id} AND favorito = '1'`, res))
+app.post('/getAlbums', verifyToken, ({ body}, res) => oneData2('album',`idUserA = '${body.id}'`, res))
+app.get('/getAlbums/:id', verifyToken, ({ params }, res) => oneData2('album',`idAlbum = '${params.id}'`, res))
+app.get('/getAlbums/:id/photos', verifyToken, ({ params }, res) => getDataAlbumPhotos(params.id, res))
 app.put('/userUpdateInfo', verifyToken, ({ body }, res) =>update('user','idUser', body, res))
 
 
@@ -184,21 +184,17 @@ const insertData = (table, names, values, res) => {
         res.json({message:error})
     }             
 };
-/*
-const oneData = (table, tableid, id, res) => {
+
+const oneData2 = (table, filter, res) => {
     try {
         axios
-        .post(api+'/getData', {
-            table,
-            id,
-            tableid
+        .post(api+'/getData2', {
+            table, 
+            filter
             })
         .then(result => {
-        console.log(result.data)
-        res.json({
-            info:result.data,
-            status:1
-        })
+            console.log(result.data)
+        res.json({status:1, info:result.data})
         })
         .catch((error)=>{res.status(400).json({status:2,message:error}); console.log(error)})   
     } catch (error) {
@@ -206,10 +202,26 @@ const oneData = (table, tableid, id, res) => {
         console.log(error)
     }   
 }
-*/
+const getDataAlbumPhotos = (idAlbum, res) => {
+    try {
+        axios
+        .post(api+'/getAlbumPhotos', {
+            idAlbum
+            })
+        .then(result => {
+        console.log(result.data)
+        res.json({status:1, info:result.data})
+        })
+        .catch((error)=>{res.status(400).json({status:2,message:error}); console.log(error)})   
+    } catch (error) {
+        res.status(400).json({Error:error, status:3})
+        console.log(error)
+    }   
+}
 //--------------------------------------------este toca
 // Obetener las imagenes que guarden  como favoritos
 const getFavoritesImages = (table, filter, res) => {
+    
     try {  
         const sql = `SELECT * FROM ${table} WHERE ${filter}`
         console.log(`> Executing ${sql}`)
@@ -242,7 +254,7 @@ const getAlbums = (table, filter, res) => {
                 return res.json({status:2}).status(500)
             }
             console.log(`> Success select from table ${table}`)
-            console.log({status:1, info: r})
+            console.log(r)
             res.json({status:1, info:r})
         })
     } catch (error) {
@@ -459,19 +471,6 @@ const oneData = (table, tableid, id, res) => {
     }   
 }
 
-const especial = ({ consulta }, res) => {
-    const sql = consulta
-    console.log(`> Executing ${sql}`)
-    client.query(sql, (err, r) => {
-        if (err){
-            console.log(err)
-            return res.json(err).status(500)
-        }
-        console.table(r)
-        
-        res.json(r)
-    })
-}
 function verifyToken(req, res, next){
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
@@ -496,14 +495,11 @@ app.listen(3001, function(){
 
 
 /*
-falta cambiar el token
-verificar que todos los select de la bd se hagan por cloud function
-aplicar monitoring
+falta cambiar el token *Angel
+verificar que todos los select de la bd se hagan por cloud function *Rircardo
+agregar la foto al album *angel
 
 
-
-Agregar imágenes a un álbum
-Agregar imagenes a favoritos
-
-
+aplicar monitoring y subuir ya finalizada la app* Ricardo y angel
+habilitar permisos unicamente necesarios *Ricardo
 */

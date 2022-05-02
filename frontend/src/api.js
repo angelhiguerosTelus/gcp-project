@@ -8,7 +8,6 @@ async function callApi(endpoint, options = {}) {
     Accept: "application/json",
     "Access-Control-Allow-Origin": "http://localhost:3001",
     "Access-Control-Allow-Credentials": "true",
-    //Authorization: `Bearer: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXN1bHQiOjIsImlhdCI6MTY1MTI2OTE4OCwiZXhwIjoxNjUyMzA1OTg4fQ.8FyTgqUK3L7X287MRQJhpQ4kqyeZ3i4h-m2dXw5vU0o`,
   };
   options.credentials = "include";
   const url = BASE_URL + endpoint;
@@ -115,5 +114,6 @@ const api = {
     },
   },
 };
+
 
 export default api;

@@ -2,11 +2,11 @@ import React from "react";
 import { useSessionStorage } from "../../hooks/useSessionStorage";
 import { Link } from "react-router-dom";
 export const Navbar = () => {
-  const [userData] = useSessionStorage("user", {});
+  const [userData, setUserD] = useSessionStorage("user", {});
 
   const handleLogout = () => {
-    userData({});
-    window.location.href = "/";
+    setUserD({})
+    window.location.href = '/'
   };
 
   return (

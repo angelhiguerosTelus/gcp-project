@@ -123,15 +123,15 @@ export const AlbumScreen = () => {
       </div>
       {/* Modal */}
       <div
-        class="modal"
+        className="modal"
         style={{
           display: view ? "block" : "none",
           backgroundColor: "#000000cf",
         }}
       >
-        <div class="modal-dialog">
+        <div className="modal-dialog">
           <div
-            class="modal-content"
+            className="modal-content"
             style={{
               width: "730px",
             }}
@@ -139,7 +139,7 @@ export const AlbumScreen = () => {
             <div className="modal-header">
               <h3>Add new album</h3>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <label htmlFor="">Name</label>
               <input
                 onChange={(e) => setNewAlbum(e.target.value)}
@@ -147,18 +147,18 @@ export const AlbumScreen = () => {
                 className="form-control"
               />
             </div>
-            <div class="modal-footer">
+            <div className="modal-footer">
               <button
                 onClick={createAlbum}
                 type="button"
-                class="btn btn-success"
+                className="btn btn-success"
               >
                 ADD
               </button>
               <button
                 onClick={() => setView(false)}
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
               >
                 Close
               </button>
@@ -169,15 +169,15 @@ export const AlbumScreen = () => {
 
       {/* Remove modal */}
       <div
-        class="modal"
+        className="modal"
         style={{
           display: view2 ? "block" : "none",
           backgroundColor: "#000000cf",
         }}
       >
-        <div class="modal-dialog">
+        <div className="modal-dialog">
           <div
-            class="modal-content"
+            className="modal-content"
             style={{
               width: "730px",
             }}
@@ -185,7 +185,7 @@ export const AlbumScreen = () => {
             <div className="modal-header">
               <h3>Remove album</h3>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <label htmlFor="">Select an album to remove</label>
               <select
                 onChange={(e) => setAlbumToRemove(e.target.value)}
@@ -200,18 +200,18 @@ export const AlbumScreen = () => {
                 ))}
               </select>
             </div>
-            <div class="modal-footer">
+            <div className="modal-footer">
               <button
                 onClick={removeAlbum}
                 type="button"
-                class="btn btn-danger"
+                className="btn btn-danger"
               >
                 REMOVE
               </button>
               <button
                 onClick={() => setView2(false)}
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
               >
                 Close
               </button>
