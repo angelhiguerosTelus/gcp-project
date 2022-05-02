@@ -7,7 +7,8 @@ import bg from "../../assets/img/background.png";
 
 export const LoginScreen = () => {
   const [values, handleInputChange, reset] = useForm({});
-  const [userData, setUserData] = useSessionStorage('user', {});
+  const [userData, setUserData] = useSessionStorage("user", {});
+  const [albumList, setAlbumList] = useSessionStorage("albums", {});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,8 +21,15 @@ export const LoginScreen = () => {
     if (data.status === 1) {
       // Inicio de sesión correcto
 
+      let data2 = await api.controlAlbum.getAlbums({
+        id: data.info[0].idUser,
+      });
+
       document.cookie = `token=${data.token}`;
+
       setUserData(data.info[0]);
+      setAlbumList(data2.info);
+
       window.location.href = "/app";
     } else if (data.status === 2) {
       Swal.fire(data.message, "", "warning");

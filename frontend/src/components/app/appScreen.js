@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useSessionStorage } from "../../hooks/useSessionStorage";
+import Swal from 'sweetalert2'
 import api from "../../api";
 
 export const AppScreen = () => {
   const [userData] = useSessionStorage("user", {});
+  const [albumList] = useSessionStorage("albums", {});
   const [photos, setPhotos] = useState([]);
   const [currentPhoto, setCurrentPhoto] = useState({});
   const [view, setView] = useState(false);
+  const [viewAlbum, setViewAlbum] = useState(false);
+  const [album, setAlbum] = useState("");
 
   const { idUser, name, username, biografia, gravatar } = userData;
 
@@ -15,9 +19,31 @@ export const AppScreen = () => {
     setView(true);
   };
 
-  // Falta implementar
-  const handleAddPhotoToFavorites = () => {
-    // Los datos de la foto estan en "currentPhoto"
+  const handleAddPhotoToFavorites = async () => {
+    let data = await api.image.addFavorite({
+      id: currentPhoto.idImg,
+      data: `favorito = '1'`,
+    });
+    setCurrentPhoto((prev) => ({ ...prev, favorito: 1 }));
+  };
+
+  const handleRemovePhotoFromFavorites = async () => {
+    let data = await api.image.addFavorite({
+      id: currentPhoto.idImg,
+      data: `favorito = '0'`,
+    });
+
+    setCurrentPhoto((prev) => ({ ...prev, favorito: 0 }));
+  };
+
+  const handleAddPhotoToAlbum = async() => {
+
+    let dat = await api.union.insert({
+      values: [album, currentPhoto.idImg]
+    })
+
+    Swal.fire('Photo added to album', '', 'success')
+
   };
 
   useEffect(() => {
@@ -113,12 +139,30 @@ export const AppScreen = () => {
             </div>
             <div class="modal-footer">
               <button
-                onClick={handleAddPhotoToFavorites}
+                onClick={() => setViewAlbum((prev) => !prev)}
                 type="button"
-                class="btn btn-danger"
+                class="btn btn-primary"
               >
-                Add to favorite
+                Add to album
               </button>
+              {currentPhoto.favorito === 1 ? (
+                <button
+                  onClick={handleRemovePhotoFromFavorites}
+                  type="button"
+                  class="btn btn-warning"
+                >
+                  Remove from favorites
+                </button>
+              ) : (
+                <button
+                  onClick={handleAddPhotoToFavorites}
+                  type="button"
+                  class="btn btn-danger"
+                >
+                  Add to favorite
+                </button>
+              )}
+
               <button
                 onClick={() => setView(false)}
                 type="button"
@@ -126,6 +170,28 @@ export const AppScreen = () => {
               >
                 Close
               </button>
+
+              {viewAlbum && ( 
+                <>
+                  <select
+                    onChange={(e) => setAlbum(e.target.value)}
+                    className="form-control"
+                  >
+                    <option value="-">
+                      ------------------- No album -------------------
+                    </option>
+                    {albumList.map((album) => (
+                      <option value={album.idAlbum}>{album.name}</option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={handleAddPhotoToAlbum}
+                    className="btn btn-success"
+                  >
+                    Add
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

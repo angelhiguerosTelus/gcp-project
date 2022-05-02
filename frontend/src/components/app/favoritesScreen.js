@@ -15,6 +15,15 @@ export const FavoritesScreen = () => {
     setView(true);
   };
 
+  const handleRemovePhotoFromFavorites = async () => {
+    let data = await api.image.addFavorite({
+      id: currentPhoto.idImg,
+      data: `favorito = '0'`,
+    });
+
+    window.location.reload();
+  };
+
   useEffect(() => {
     const fetchPhotos = async () => {
       let data = await api.controlAlbum.getFavoritesPhotos({
@@ -103,9 +112,13 @@ export const FavoritesScreen = () => {
               <p>{currentPhoto.descripcion}</p>
             </div>
             <div class="modal-footer">
-              {/* <button type="button" class="btn btn-danger">
-                Remove from favorite
-              </button> */}
+              <button
+                onClick={handleRemovePhotoFromFavorites}
+                type="button"
+                class="btn btn-warning"
+              >
+                Remove from favorites
+              </button>
               <button
                 onClick={() => setView(false)}
                 type="button"
