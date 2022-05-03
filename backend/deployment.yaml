@@ -15,7 +15,7 @@ spec:
         app: api
     spec:
       containers:
-        - name: backend
-          image: umgtato/api:v1
-          ports:
-            - containerPort: 3000
+      - name: api-backend
+        image: umgtato/api
+        ports:
+        - containerPort: 3000

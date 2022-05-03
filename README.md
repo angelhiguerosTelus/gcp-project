@@ -5,12 +5,24 @@
 
 
 
-# Google Kubernetes Engine (Deployment)
+# Google Kubernetes Engine (Backend)
 
 
 
-# Google Engine y Network Balancer (Deployment)
+# Google Engine y Network Balancer (Frontend)
+## Crear imagen en docker y publicarla
+```sh
 
+gcloud auth configure-docker 
+gcloud config set compute/zone us-central1-a
+
+docker build --platform linux/amd64 -t angelhigueros11/frontend . 
+docker run -it -p 3000:3000 --name project  angelhigueros11/frontend
+
+
+
+
+```
 
 
 # Cloud Monitoring

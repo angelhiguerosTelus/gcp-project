@@ -28,6 +28,7 @@ export const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarText">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
+              {/* Cambiar por ip de la app2 */}
               <Link className="nav-link active" aria-current="page" to="/app">
                 Home
               </Link>

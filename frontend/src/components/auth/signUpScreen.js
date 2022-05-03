@@ -22,7 +22,8 @@ export const SignUpScreen = () => {
 
     if (parseInt(data.status) === 1) {
       Swal.fire("User created successfuly", "", "success").then(() => {
-        window.location.href = "/";
+      {/* Cambiar por ip de la app2 */}
+        window.location.href = "/app";
       });
     } else {
       Swal.fire(data.message, "", "error");
