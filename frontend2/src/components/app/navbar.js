@@ -5,7 +5,7 @@ export const Navbar = () => {
   const handleLogout = () => {
     setUserData({});
     document.cookie = `user={}`;   
-    window.location.href = "http://34.138.106.210/close";
+    window.location.href = "http://35.237.144.245/close";
   };
 
   return (
@@ -33,17 +33,17 @@ export const Navbar = () => {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="http://34.138.106.210/album">
+              <a className="nav-link" href="http://35.237.144.245/album">
                 Album
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="http://34.138.106.210/favorites">
+              <a className="nav-link" href="http://35.237.144.245/favorites">
                 Favorites
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="http://34.138.106.210/app/images">
+              <a className="nav-link" href="http://35.237.144.245/app/images">
                 New images
               </a>
             </li>

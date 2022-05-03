@@ -66,10 +66,10 @@ export const AppScreen = () => {
   }, []);
   useEffect(() => {
     if (String(idUser)==='undefined') {
-      window.location.href = "http://localhost:3000/close";
+      window.location.href = "http://34.138.192.177/close";
     } 
 
-      fetch('http://localhost:3000/getNoAlbum', {
+      fetch('http://35.193.116.113/getNoAlbum', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -85,21 +85,6 @@ export const AppScreen = () => {
       .catch((error) => {
         console.error('Error:', error);
       });
-
-
-/*     const fetchPhotos2 = async () => {
-      let data2 = await api.controlAlbum.getphoto2({
-        id: idUser,
-      });
-      console.log(data2)
-      if (parseInt(data2.status) === 1) {
-        setPhotos(data2.info);
-      } else {
-        console.log(data2.message);
-      }
-    };
-    fetchPhotos2(); */
-
   }, []);
 
   return (
@@ -138,7 +123,7 @@ export const AppScreen = () => {
               <div className="row ">
                 {albums.map((album) => (
                   <a
-                    href={`/album/${album.idAlbum}`}
+                    href={`http://34.138.192.177/album/${album.idAlbum}`}
                     className=" album-card col-lg-4 mb-2"
                   >
                     <h3>{album.name}</h3>

@@ -8,7 +8,7 @@ gcloud compute instances create app1 \
         sudo apt install docker.io -y; 
         sudo chmod 666 /var/run/docker.sock; 
 
-        docker run -d -p 80:3000 --name frontend  angelhigueros11/frontend:latest
+        docker run -d -p 80:3000 --name gcp-frontend  angelhigueros11/gcp-frontend:latest
     "
 
 # Comando para crear la VM 2
@@ -22,7 +22,7 @@ gcloud compute instances create app2 \
         sudo chmod 666 /var/run/docker.sock
         sudo chmod 666 /var/run/docker.sock; 
 
-        docker run -d -p 80:3000 --name frontend  angelhigueros11/frontend:latest
+        docker run -d -p 80:3000 --name gcp-frontend  angelhigueros11/gcp-frontend:latest
     "
 
 # Comando para crear la VM 3
@@ -36,7 +36,7 @@ gcloud compute instances create app3 \
         sudo chmod 666 /var/run/docker.sock
         sudo chmod 666 /var/run/docker.sock; 
 
-        docker run -d -p 3000:3000 --name frontend  angelhigueros11/frontend:latest
+        docker run -d -p 80:3000 --name gcp-frontend  angelhigueros11/gcp-frontend:latest
         
     "
 
