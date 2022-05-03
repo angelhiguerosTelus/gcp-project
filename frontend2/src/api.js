@@ -21,7 +21,7 @@ async function callApi(endpoint, options = {}) {
     "Content-Type": "application/json",
     Authorization: "Bearer " + getCookie('token'),
     Accept: "application/json",
-    "Access-Control-Allow-Origin": "http://localhost:3001",
+    "Access-Control-Allow-Origin": "http://35.193.116.113",
     "Access-Control-Allow-Credentials": "true",
   };
   options.credentials = "include";
