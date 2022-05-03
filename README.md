@@ -1,9 +1,17 @@
 # Google  SQL - MySQL
-
+#comandos para crear la instancia sql 
+gcloud sql instances create sqlproject \
+--database-version=MYSQL_8_0_28
+gcloud sql instances describe sqlproject
+#comando para agregar contrasena al usuario root
+gcloud sql users set-password root \
+--host=% \
+--instance=INSTANCE_NAME \
+--prompt-for-password
 
 # Google  Function
-
-
+#comandos para la cloud functions
+gcloud functions deploy 'finalproject' --runtime nodejs16 --trigger-http --entry-point=function
 
 # Google Kubernetes Engine (Deployment)
 ```sh

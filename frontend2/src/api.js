@@ -98,12 +98,6 @@ const api = {
         body: JSON.stringify(params),
       });
     },
-    getphoto2(params) {
-      return callApi(`/Nphotos`, {
-        method: "POST",
-        body: JSON.stringify(params),
-      });
-    },
     getPhotos(params) {
       return callApi(`/oneDataImage`, {
         method: "POST",
@@ -118,6 +112,12 @@ const api = {
     },
     getAlbums(params) {
       return callApi(`/getAlbums/`, {
+        method: "POST",
+        body: JSON.stringify(params),
+      });
+    },
+    getphoto2(params) {
+      return callApi(`/getNoAlbum`, {
         method: "POST",
         body: JSON.stringify(params),
       });

@@ -56,7 +56,7 @@ const gc=new Storage({
 });
 const bucket= gc.bucket('storage-images');
 
-
+app.post('/getNoAlbum', ({ body}, res) => getPhotosN('imagenes',body.id, res))
 app.post('/signup', ({ body }, res) => signup('user',names.user,body.values, res))
 app.post('/signin', ({ body }, res) => signin(body, res))
 app.post('/insertDataImagen', ({body}, res) => insertData('imagenes',names.image, body.values, res))
@@ -74,31 +74,12 @@ app.delete('/deleteImageFromAlbumWithoutId', verifyToken, ({ body}, res) => dele
 
 
 app.delete('/closeAccunt', verifyToken, ({ body}, res) => deleteAccount(body, res))
-app.post('/Nphotos', ({ body}, res) => getPhotosN('imagenes',body.id, res))
 app.post('/getFavoritesImages', verifyToken, ({ body}, res) => oneData2('imagenes',`idUserI = ${body.id} AND favorito = '1'`, res))
 app.post('/getAlbums', verifyToken, ({ body}, res) => oneData2('album',`idUserA = '${body.id}'`, res))
 app.get('/getAlbums/:id', verifyToken, ({ params }, res) => oneData2('album',`idAlbum = '${params.id}'`, res))
 app.get('/getAlbums/:id/photos', verifyToken, ({ params }, res) => getDataAlbumPhotos(params.id, res))
 app.put('/userUpdateInfo', verifyToken, ({ body }, res) =>update('user','idUser', body, res))
-app.post('/especial', ({ body}, res) => esp(body.cons, res))
 
-const esp = (consulta, res) => {
-    try {  
-
-        console.log(`> Executing ${consulta}`)
-        client.query(consulta, (err, r) => {
-            if (err){
-                console.log(err)
-                return res.json({status:2}).status(500)
-            }
-            console.log(`> Success inserting to table`)
-            res.json({status:1, id:r})
-        })
-    } catch (error) {
-        console.log(error)
-        res.json({message:error})
-    }             
-};
 
 // Process the file upload and upload to Google Cloud Storage.
 app.post('/upload', multer.single('file'), (req, res, next) => {
@@ -238,7 +219,6 @@ const getDataAlbumPhotos = (idAlbum, res) => {
 
 // Obetener las imagenes que guarden  como favoritos
 const getPhotosN = (table, id, res) => {
-    console.log("ssss"+id)
     try {
         axios
         .post(api+'/getData2', {

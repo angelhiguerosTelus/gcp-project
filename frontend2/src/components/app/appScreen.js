@@ -68,8 +68,26 @@ export const AppScreen = () => {
     if (String(idUser)==='undefined') {
       window.location.href = "http://localhost:3000/close";
     } 
-    console.log('1111')
-    const fetchPhotos2 = async () => {
+
+      fetch('http://localhost:3000/getNoAlbum', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: "Bearer " + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXN1bHQiOjIsImlhdCI6MTY1MTYxMjE3OCwiZXhwIjoxNjUyNjQ4OTc4fQ.lHKjE0RRwI3clW7fPlXZkkHSO8QOJUdnylEjx8yvtvA',
+        },
+        body: JSON.stringify({id:idUser}),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.info);
+        setPhotos(data.info);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+
+
+/*     const fetchPhotos2 = async () => {
       let data2 = await api.controlAlbum.getphoto2({
         id: idUser,
       });
@@ -80,9 +98,9 @@ export const AppScreen = () => {
         console.log(data2.message);
       }
     };
-    fetchPhotos2();
-      console.log('si?')  
-  }, [idUser]);
+    fetchPhotos2(); */
+
+  }, []);
 
   return (
     <div>
