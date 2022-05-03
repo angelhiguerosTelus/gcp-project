@@ -27,7 +27,8 @@ kubectl apply -f deployment.yml
 
 # Google Engine y Network Balancer (Deployment)
 
-
+docker run -d -p 3000:3000 --name frontend angelhigueros11/frontend
+docker push angelhigueros11/frontend
 
 # Cloud Monitoring
 ## CREAR VM Y HACER DEPLOY
@@ -38,6 +39,18 @@ gcloud services enable stackdriver.googleapis.com
 
 # Crear un deployment
 gcloud deployment-manager deployments create dsudeployment --config deployment.yaml
+
+
+# 34.74.191.102
+# 35.237.49.178
+
+
+docker stop frontend
+docker rm  frontend
+ docker rmi angelhigueros11/frontend:latest
+docker run -d -p 80:3000 --name frontend  angelhigueros11/frontend:latest
+
+
 
 ```
 ## INSTALAR HERRAMIENTAS EN LA VM 

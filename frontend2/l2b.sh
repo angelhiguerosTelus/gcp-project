@@ -7,11 +7,8 @@ gcloud compute instances create app1 \
         sudo apt update -y; 
         sudo apt install docker.io -y; 
         sudo chmod 666 /var/run/docker.sock; 
-        docker network create mysupernetwork
 
-        docker run -d -p 3000:3000 --name frontend --network mysupernetwork angelhigueros11/frontend:latest
-
-
+        docker run -d -p 80:3000 --name frontend  angelhigueros11/frontend:latest
     "
 
 # Comando para crear la VM 2
@@ -23,9 +20,9 @@ gcloud compute instances create app2 \
         sudo apt update -y
         sudo apt install docker.io -y
         sudo chmod 666 /var/run/docker.sock
-        docker network create mysupernetwork
+        sudo chmod 666 /var/run/docker.sock; 
 
-        docker run -d -p 3000:3000 --name frontend --network mysupernetwork angelhigueros11/frontend:latest
+        docker run -d -p 80:3000 --name frontend  angelhigueros11/frontend:latest
     "
 
 # Comando para crear la VM 3
@@ -37,9 +34,9 @@ gcloud compute instances create app3 \
         sudo apt update -y
         sudo apt install docker.io -y
         sudo chmod 666 /var/run/docker.sock
-        docker network create mysupernetwork
+        sudo chmod 666 /var/run/docker.sock; 
 
-        docker run -d -p 3000:3000 --name frontend --network mysupernetwork angelhigueros11/frontend:latest
+        docker run -d -p 3000:3000 --name frontend  angelhigueros11/frontend:latest
         
     "
 
