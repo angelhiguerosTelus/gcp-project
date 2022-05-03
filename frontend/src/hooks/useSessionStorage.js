@@ -3,7 +3,7 @@ import { useState } from 'react'
 export function useSessionStorage(key, initialValue) {
   const [storedValue, setValue] = useState(() => {
     try {
-      const item = window.sessionStorage.getItem(key)
+      const item = localStorage.getItem(key)
       return item != null ? JSON.parse(item) : initialValue
     } catch (e) {
       return initialValue
@@ -12,7 +12,7 @@ export function useSessionStorage(key, initialValue) {
 
   const setSessionStorage = value => {
     try {
-      window.sessionStorage.setItem(key, JSON.stringify(value))
+      localStorage.setItem(key, JSON.stringify(value)) 
       setValue(value)
     } catch (e) {
       console.log(e)
@@ -22,6 +22,6 @@ export function useSessionStorage(key, initialValue) {
 }
 
 export function useSessionStorageList() {
-  const item = window.sessionStorage
+  const item = localStorage
   return item
 }

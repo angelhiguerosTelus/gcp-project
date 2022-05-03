@@ -5,13 +5,13 @@ import api from "../../api";
 
 export const AppScreen = () => {
   const [userData] = useSessionStorage("user", {});
-  const [albumList] = useSessionStorage("albums", {});
+  const [albumList, setAlbumList] = useSessionStorage("albums", {});
   const [photos, setPhotos] = useState([]);
   const [currentPhoto, setCurrentPhoto] = useState({});
   const [view, setView] = useState(false);
+  const [albums, setAlbums] = useState([]);
   const [viewAlbum, setViewAlbum] = useState(false);
   const [album, setAlbum] = useState("");
-
   const { idUser, name, username, biografia, gravatar } = userData;
 
   const handleViewPhoto = (photo) => {
@@ -49,24 +49,44 @@ export const AppScreen = () => {
     Swal.fire('Photo added to album', '', 'success')
 
   };
-
   useEffect(() => {
     const fetchPhotos = async () => {
-      let data = await api.controlAlbum.getPhotos({
+      let data = await api.controlAlbum.getAlbums({
         id: idUser,
       });
 
       if (parseInt(data.status) === 1) {
-        setPhotos(data.info);
+        setAlbums(data.info);
+        setAlbumList(data.info);
       } else {
         console.log(data.message);
       }
     };
     fetchPhotos();
   }, []);
+  useEffect(() => {
+    if (String(idUser)==='undefined') {
+      window.location.href = "http://localhost:3000/close";
+    } 
+    console.log('1111')
+    const fetchPhotos2 = async () => {
+      let data2 = await api.controlAlbum.getphoto2({
+        id: idUser,
+      });
+      console.log(data2)
+      if (parseInt(data2.status) === 1) {
+        setPhotos(data2.info);
+      } else {
+        console.log(data2.message);
+      }
+    };
+    fetchPhotos2();
+      console.log('si?')  
+  }, [idUser]);
 
   return (
     <div>
+      
       <div className="row py-5 px-4">
         <div className="col-md-9 mx-auto">
           <div className="bg-white shadow rounded overflow-hidden">
@@ -92,6 +112,26 @@ export const AppScreen = () => {
               <h5 className="mb-0">Biography</h5>
               <div className="p-4 rounded shadow-sm bg-light">{biografia}</div>
             </div>
+
+            <div className="py-4 px-4">
+              <div className="d-flex align-items-center justify-content-between mb-3">
+                <h5 className="mb-0">Albums</h5>
+              </div>
+              <div className="row ">
+                {albums.map((album) => (
+                  <a
+                    href={`/album/${album.idAlbum}`}
+                    className=" album-card col-lg-4 mb-2"
+                  >
+                    <h3>{album.name}</h3>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+
+
+
             <div className="py-4 px-4">
               <div className="d-flex align-items-center justify-content-between mb-3">
                 <h5 className="mb-0">Photos</h5>

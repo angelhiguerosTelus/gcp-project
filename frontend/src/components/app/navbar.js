@@ -5,7 +5,8 @@ export const Navbar = () => {
   const [userData, setUserData] = useSessionStorage("user", {});
   const handleLogout = () => {
     setUserData({});
-    // cambiar por ip app 2
+    document.cookie = `user={}`;   
+    document.cookie = `token={}`;   
     window.location.href = "/";
   };
 
@@ -30,9 +31,9 @@ export const Navbar = () => {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               {/* Cambiar por ip app 2 */}
-              <Link className="nav-link active" aria-current="page" to="/app">
+              <a className="nav-link active" aria-current="page" href="http://localhost:3002/">
                 Home
-              </Link>
+              </a>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/album">

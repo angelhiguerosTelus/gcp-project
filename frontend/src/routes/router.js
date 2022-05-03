@@ -12,7 +12,7 @@ import { AlbumImagesScreen } from '../components/app/albumImagesScreen'
 import {Navbar} from '../components/app/navbar'
 
 export const Router = () => {
-    const [userD] = useSessionStorage("user", {});
+    const [userD, setUserData] = useSessionStorage("user", {});
       const PrivateRoute = ({
         comp: Component,
         ...rest
@@ -27,6 +27,12 @@ export const Router = () => {
           }
         />
       );
+      function Close(){
+        setUserData({});
+        document.cookie = `user={}`;   
+        document.cookie = `token={}`; 
+        window.location.href = "/";
+      }
   return (
     <BrowserRouter >
     <div>
@@ -35,9 +41,9 @@ export const Router = () => {
         )}        
         <Switch>
             <Route exact path="/" component={LoginScreen} />
+            <Route exact path="/close" component={Close} />
             <Route exact path="/signup" component={SignUpScreen} />
 
-            <PrivateRoute exact path="/app" comp={AppScreen}/>
             <PrivateRoute exact path="/favorites" comp={FavoritesScreen} />
             <PrivateRoute exact path="/album" comp={AlbumScreen} />
             <PrivateRoute exact path="/profile" comp={ProfileScreen} />

@@ -31,6 +31,7 @@ async function callApi(endpoint, options = {}) {
   return data;
 }
 
+
 const api = {
   users: {
     login(params) {
@@ -94,6 +95,12 @@ const api = {
     removeAlbum(params) {
       return callApi(`/deleteAlbum`, {
         method: "DELETE",
+        body: JSON.stringify(params),
+      });
+    },
+    getphoto2(params) {
+      return callApi(`/Nphotos`, {
+        method: "POST",
         body: JSON.stringify(params),
       });
     },

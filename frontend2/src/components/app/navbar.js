@@ -1,18 +1,17 @@
 import React from "react";
 import { useSessionStorage } from "../../hooks/useSessionStorage";
-import { Link } from "react-router-dom";
 export const Navbar = () => {
   const [userData, setUserData] = useSessionStorage("user", {});
   const handleLogout = () => {
     setUserData({});
-    {/* Cambiar por ip de la app 1 */}
-    window.location.href = "/";
+    document.cookie = `user={}`;   
+    window.location.href = "http://localhost:3000/close";
   };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
-        <a className="navbar-brand" href="/app">
+        <a className="navbar-brand" href="/">
           GCP Project
         </a>
         <button
@@ -29,34 +28,26 @@ export const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarText">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              {/* Cambiar por ip de la app 1 */}
-              <Link className="nav-link active" aria-current="page" to="/app">
+              <a className="nav-link active" aria-current="page" href="/" >
                 Home
-              </Link>
+              </a>
             </li>
             <li className="nav-item">
-              {/* Cambiar por ip de la app 1 */}
-
-              <Link className="nav-link" to="/album">
+              <a className="nav-link" href="http://localhost:3000/album">
                 Album
-              </Link>
+              </a>
             </li>
             <li className="nav-item">
-              {/* Cambiar por ip de la app 1 */}
-
-              <Link className="nav-link" to="/favorites">
+              <a className="nav-link" href="http://localhost:3000/favorites">
                 Favorites
-              </Link>
+              </a>
             </li>
             <li className="nav-item">
-              {/* Cambiar por ip de la app 1 */}
-              <Link className="nav-link" to="/app/images">
+              <a className="nav-link" href="http://localhost:3000/app/images">
                 New images
-              </Link>
+              </a>
             </li>
           </ul>
-
-          {/* Cambiar por ip de la app 1 */}
           <a href="/profile" className="btn btn-primary">
             {userData.username}
           </a>

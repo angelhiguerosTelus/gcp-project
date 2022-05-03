@@ -17,20 +17,18 @@ export const LoginScreen = () => {
       username: values.username,
       pass: values.password,
     });
-
+    document.cookie = `user=${JSON.stringify(data.info[0])}`;   
+    console.log(data.info)
     if (data.status === 1) {
       // Inicio de sesión correcto
-
+      document.cookie = `token=${data.token}`;      
       let data2 = await api.controlAlbum.getAlbums({
         id: data.info[0].idUser,
-      });
-
-      document.cookie = `token=${data.token}`;
-
+      });            
       setUserData(data.info[0]);
       setAlbumList(data2.info);
       // {/* Cambiar por ip app 2 */}
-      window.location.href = "/app";
+      window.location.href = "/album";
     } else if (data.status === 2) {
       Swal.fire(data.message, "", "warning");
     } else {

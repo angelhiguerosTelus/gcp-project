@@ -14,6 +14,8 @@ export const ProfileScreen = () => {
 
   const handleLogout = () => {
     setUserD({})
+    document.cookie = `user={}`;   
+    document.cookie = `token={}`;   
     window.location.href = '/'
   }
   const handleClose = async () => {

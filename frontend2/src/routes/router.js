@@ -6,27 +6,12 @@ import { Navbar } from "../components/app/navbar";
 
 export const Router = () => {
   const [userD] = useSessionStorage("user", {});
-  const PrivateRoute = ({ comp: Component, ...rest }) => (
-    <Route
-      {...rest}
-      render={(props) =>
-        userD.idUser === 0 || String(userD.idUser) === "undefined" ? (
-          <Redirect to="/login" />
-        ) : (
-          <Component {...props} />
-        )
-      }
-    />
-  );
   return (
     <BrowserRouter>
       <div>
-        {userD.idUser !== 0 && String(userD.idUser) !== "undefined" && (
           <Navbar />
-        )}
         <Switch>
-          <PrivateRoute exact path="/" comp={AppScreen} />
-          {/* Cambiar por ip de la app1 */}
+        <Route exact path="/" component={AppScreen} />
           <Redirect to="/" />
         </Switch>
       </div>

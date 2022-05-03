@@ -57,9 +57,6 @@ const gc=new Storage({
 const bucket= gc.bucket('storage-images');
 
 
-
-app.post('/especial', ({ body}, res) => especial(body, res))
-
 app.post('/signup', ({ body }, res) => signup('user',names.user,body.values, res))
 app.post('/signin', ({ body }, res) => signin(body, res))
 app.post('/insertDataImagen', ({body}, res) => insertData('imagenes',names.image, body.values, res))
@@ -77,14 +74,31 @@ app.delete('/deleteImageFromAlbumWithoutId', verifyToken, ({ body}, res) => dele
 
 
 app.delete('/closeAccunt', verifyToken, ({ body}, res) => deleteAccount(body, res))
+app.post('/Nphotos', ({ body}, res) => getPhotosN('imagenes',body.id, res))
 app.post('/getFavoritesImages', verifyToken, ({ body}, res) => oneData2('imagenes',`idUserI = ${body.id} AND favorito = '1'`, res))
 app.post('/getAlbums', verifyToken, ({ body}, res) => oneData2('album',`idUserA = '${body.id}'`, res))
 app.get('/getAlbums/:id', verifyToken, ({ params }, res) => oneData2('album',`idAlbum = '${params.id}'`, res))
 app.get('/getAlbums/:id/photos', verifyToken, ({ params }, res) => getDataAlbumPhotos(params.id, res))
 app.put('/userUpdateInfo', verifyToken, ({ body }, res) =>update('user','idUser', body, res))
+app.post('/especial', ({ body}, res) => esp(body.cons, res))
 
+const esp = (consulta, res) => {
+    try {  
 
-
+        console.log(`> Executing ${consulta}`)
+        client.query(consulta, (err, r) => {
+            if (err){
+                console.log(err)
+                return res.json({status:2}).status(500)
+            }
+            console.log(`> Success inserting to table`)
+            res.json({status:1, id:r})
+        })
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    }             
+};
 
 // Process the file upload and upload to Google Cloud Storage.
 app.post('/upload', multer.single('file'), (req, res, next) => {
@@ -221,102 +235,25 @@ const getDataAlbumPhotos = (idAlbum, res) => {
         console.log(error)
     }   
 }
-//--------------------------------------------este toca
+
 // Obetener las imagenes que guarden  como favoritos
-const getFavoritesImages = (table, filter, res) => {
-    
-    try {  
-        const sql = `SELECT * FROM ${table} WHERE ${filter}`
-        console.log(`> Executing ${sql}`)
-        client.query(sql, (err, r) => {
-            if (err){
-                console.log(`! Error select from table ${table}`)
-                console.log(err)
-                return res.json({status:2}).status(500)
-            }
-    
-            console.log(`> Success select from table ${table}`)
-            console.log({status:1, info: r})
-            res.json({status:1, info:r})
+const getPhotosN = (table, id, res) => {
+    console.log("ssss"+id)
+    try {
+        axios
+        .post(api+'/getData2', {
+            table, 
+            filter:`idUserI=${id} and idImg not in (select idImgU from albumImg )`
+            })
+        .then(result => {
+        res.json({status:1, info:result.data})
         })
+        .catch((error)=>{res.status(400).json({status:2,message:error}); console.log(error)})   
     } catch (error) {
+        res.status(400).json({Error:error, status:3})
         console.log(error)
-        res.json({message:error})
-    }             
-};
-//--------------------------------------------este toca
-// Obetener  los albums del usuario
-const getAlbums = (table, filter, res) => {
-    try {  
-        const sql = `SELECT * FROM ${table} WHERE ${filter}`
-        console.log(`> Executing ${sql}`)
-        client.query(sql, (err, r) => {
-            if (err){
-                console.log(`! Error select from table ${table}`)
-                console.log(err)
-                return res.json({status:2}).status(500)
-            }
-            console.log(`> Success select from table ${table}`)
-            console.log(r)
-            res.json({status:1, info:r})
-        })
-    } catch (error) {
-        console.log(error)
-        res.json({message:error})
-    }             
-};
-
-
-//--------------------------------------------este toca
-
-// Obetener la informacion de un album
-const getAlbumInfo = (table, filter, res) => {
-    try {  
-        const sql = `SELECT * FROM ${table} WHERE ${filter}`
-        console.log(`> Executing ${sql}`)
-        client.query(sql, (err, r) => {
-            if (err){
-                console.log(`! Error select from table ${table}`)
-                console.log(err)
-                return res.json({status:2}).status(500)
-            }
-    
-            console.log(`> Success select from table ${table}`)
-            console.log({status:1, info: r})
-            res.json({status:1, info:r})
-        })
-    } catch (error) {
-        console.log(error)
-        res.json({message:error})
-    }             
-};
-
-//--------------------------------------------este toca
-// Obetener las imagenes de un album
-const getAlbumPhotos = (idAlbum, res) => {
-    try {  
-        const sql = `SELECT imagenes.idImg, imagenes.descripcion, imagenes.favorito, imagenes.URL
-                     FROM albumImg
-                     JOIN imagenes ON imagenes.idImg = albumImg.idImgU
-                     WHERE idAlbumU = '${idAlbum}'`
-        console.log(`> Executing ${sql}`)
-        client.query(sql, (err, r) => {
-            if (err){
-                console.log(`! Error select from table albumImg `)
-                console.log(err)
-                return res.json({status:2}).status(500)
-            }
-    
-            console.log(`> Success select from table albumImg`)
-            console.log({status:1, info: r})
-            res.json({status:1, info:r})
-        })
-    } catch (error) {
-        console.log(error)
-        res.json({message:error})
-    }             
-};
-
+    }   
+}
 //updateData
 const update = (table, tableId, campos, res) => {
     try {  
@@ -530,4 +467,6 @@ agregar la foto al album *angel
 
 aplicar monitoring y subuir ya finalizada la app* Ricardo y angel
 habilitar permisos unicamente necesarios *Ricardo
+
+SELECT * from imagenes where idUserI=1 and idImg not in (select idImgU from albumImg )
 */

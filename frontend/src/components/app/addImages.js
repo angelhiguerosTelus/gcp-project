@@ -4,7 +4,7 @@ import ImageUploading from 'react-images-uploading';
 import Swal from "sweetalert2";
 import api from "../../api";
 export const AddImages = () => {
-    const idUser=JSON.parse(sessionStorage.getItem('user')).idUser
+    const idUser=JSON.parse(localStorage.getItem('user')).idUser
     const apilink=process.env.REACT_APP_BACK
     const [images, setImages] = useState([]);
     const [oldAlbum, setOldAlbum] = useState([]);
