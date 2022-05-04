@@ -64,9 +64,25 @@ export const AppScreen = () => {
     };
     fetchPhotos();
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      let data = await api.controlAlbum.getphoto2({
+        id:idUser
+      })
+  
+      if(parseInt(data.status) === 1) {
+        setPhotos(data.info);
+      }else{
+        console.error('Error:', data);
+  
+      }
+    }
+    fetchData() 
+  }, []);
 
   return (
     <div>
+      
       <div className="row py-5 px-4">
         <div className="col-md-9 mx-auto">
           <div className="bg-white shadow rounded overflow-hidden">
@@ -91,6 +107,22 @@ export const AppScreen = () => {
             <div className="px-4 py-3">
               <h5 className="mb-0">Biography</h5>
               <div className="p-4 rounded shadow-sm bg-light">{biografia}</div>
+            </div>
+
+            <div className="py-4 px-4">
+              <div className="d-flex align-items-center justify-content-between mb-3">
+                <h5 className="mb-0">Albums</h5>
+              </div>
+              <div className="row ">
+                {album.map((album) => (
+                  <a
+                    href={`/album/${album.idAlbum}`}
+                    className=" album-card col-lg-4 mb-2"
+                  >
+                    <h3>{album.name}</h3>
+                  </a>
+                ))}
+              </div>
             </div>
             <div className="py-4 px-4">
               <div className="d-flex align-items-center justify-content-between mb-3">

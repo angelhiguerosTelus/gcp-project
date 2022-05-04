@@ -103,6 +103,12 @@ const api = {
         body: JSON.stringify(params),
       });
     },
+    getphoto2(params) {
+      return callApi(`/getNoAlbum`, {
+        method: "POST",
+        body: JSON.stringify(params),
+      });
+    },
     getFavoritesPhotos(params) {
       return callApi(`/getFavoritesImages`, {
         method: "POST",
