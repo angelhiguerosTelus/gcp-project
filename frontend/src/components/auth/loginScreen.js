@@ -28,7 +28,7 @@ export const LoginScreen = () => {
       setUserData(data.info[0]);
       setAlbumList(data2.info);
       // {/* Cambiar por ip app 2 */}
-      window.location.href = "https://gcp-gcp-final.uc.r.appspot.com/";
+      window.location.href = "https://gcp-entrega-final.uc.r.appspot.com";
     } else if (data.status === 2) {
       Swal.fire(data.message, "", "warning");
     } else {

@@ -31,7 +31,7 @@ export const Navbar = () => {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               {/* Cambiar por ip app 2 */}
-              <a className="nav-link active" aria-current="page" href="https://gcp-gcp-final.uc.r.appspot.com/">
+              <a className="nav-link active" aria-current="page" href="https://gcp-entrega-final.uc.r.appspot.com">
                 Home
               </a>
             </li>
