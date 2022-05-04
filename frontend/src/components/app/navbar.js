@@ -25,10 +25,9 @@ export const Navbar = () => {
     return "";
   }
 
-  let cookie = getCookie("token").replace(/./g, ',');
+  let cookie = getCookie("token").replace(/\./g,',');
 
   const envio = userData.idUser + "+" + cookie;
-
   const nueva = "https://gcp-entrega-final.uc.r.appspot.com/" + envio;
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
