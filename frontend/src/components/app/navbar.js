@@ -25,7 +25,7 @@ export const Navbar = () => {
     return "";
   }
 
-  let cookie = getCookie("token").replace(/./g, ",");
+  let cookie = getCookie("token").replace(/./g, ',');
 
   const envio = userData.idUser + "+" + cookie;
 

@@ -17,6 +17,7 @@ export const LoginScreen = () => {
       username: values.username,
       pass: values.password,
     });
+    
     document.cookie = `user=${JSON.stringify(data.info[0])}`;   
     console.log(data.info)
     if (data.status === 1) {
