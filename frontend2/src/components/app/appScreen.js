@@ -72,6 +72,7 @@ export const AppScreen = ({ match: { params } }) => {
       let data = await api.users.getinfo({
         id: datos[0],
       });
+      console.log(data)
       if (parseInt(data.status) === 1) {
         setUserData(data.info[0])
       } else {
