@@ -44,6 +44,7 @@ export const Router = () => {
             <Route exact path="/close" component={Close} />
             <Route exact path="/signup" component={SignUpScreen} />
 
+            <PrivateRoute exact path="/app" comp={AppScreen} />
             <PrivateRoute exact path="/favorites" comp={FavoritesScreen} />
             <PrivateRoute exact path="/album" comp={AlbumScreen} />
             <PrivateRoute exact path="/profile" comp={ProfileScreen} />

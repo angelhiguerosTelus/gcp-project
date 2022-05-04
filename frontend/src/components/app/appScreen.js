@@ -114,7 +114,7 @@ export const AppScreen = () => {
                 <h5 className="mb-0">Albums</h5>
               </div>
               <div className="row ">
-                {album.map((album) => (
+                {albumList.map((album) => (
                   <a
                     href={`/album/${album.idAlbum}`}
                     className=" album-card col-lg-4 mb-2"

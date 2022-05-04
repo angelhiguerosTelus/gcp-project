@@ -32,7 +32,7 @@ export const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
-        <a className="navbar-brand" href={nueva}>
+        <a className="navbar-brand" href="/app">
           GCP Project
         </a>
         <button
@@ -50,9 +50,9 @@ export const Navbar = () => {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               {/* Cambiar por ip app 2 https://gcp-entrega-final.uc.r.appspot.com */}
-              <a className="nav-link active" aria-current="page" href={nueva}>
+              <Link className="nav-link" to="/app">
                 Home
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/album">
