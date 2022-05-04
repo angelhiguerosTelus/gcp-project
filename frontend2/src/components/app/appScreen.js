@@ -85,21 +85,37 @@ export const AppScreen = ({ match: { params } }) => {
     if (String(datos[0])==='undefined') {
       window.location.href = "http://localhost:3000/close";
     } 
-      fetch('http://35.193.116.113/getNoAlbum', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: "Bearer " + datos[1]
-        },
-        body: JSON.stringify({id:datos[0]}),
+
+    const fetchData = async () => {
+      let data = await api.controlAlbum.getphoto2({
+        id:datos[0]
       })
-      .then(response => response.json())
-      .then(data => {
+  
+      if(parseInt(data.status) === 1) {
         setPhotos(data.info);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      }); 
+      }else{
+        console.error('Error:', data);
+  
+      }
+    }
+
+    fetchData()
+
+      // fetch('http://35.193.116.113/getNoAlbum', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: "Bearer " + datos[1]
+      //   },
+      //   body: JSON.stringify({id:datos[0]}),
+      // })
+      // .then(response => response.json())
+      // .then(data => {
+      //   setPhotos(data.info);
+      // })
+      // .catch((error) => {
+      //   console.error('Error:', error);
+      // }); 
   }, []);
 
   return (
