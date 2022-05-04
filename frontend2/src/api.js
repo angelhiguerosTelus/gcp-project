@@ -58,6 +58,12 @@ const api = {
         body: JSON.stringify(params),
       });
     },
+    getinfo(params) {
+      return callApi(`/userData`, {
+        method: "POST",
+        body: JSON.stringify(params),
+      });
+    },
   },
   image: {
     addImage(params) {

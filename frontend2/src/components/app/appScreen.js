@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useSessionStorage } from "../../hooks/useSessionStorage";
 import Swal from 'sweetalert2'
 import api from "../../api";
 
-export const AppScreen = () => {
-  const [userData] = useSessionStorage("user", {});
-  const [albumList, setAlbumList] = useSessionStorage("albums", {});
+export const AppScreen = ({ match: { params } }) => {
+  const datos=params.iduser.split("+", 2)
+  document.cookie = `token=${datos[1]}`;
+  const [userData, setUserData] = useState({});
+  const [albumList, setAlbumList] = useState({});
   const [photos, setPhotos] = useState([]);
   const [currentPhoto, setCurrentPhoto] = useState({});
   const [view, setView] = useState(false);
@@ -14,6 +15,7 @@ export const AppScreen = () => {
   const [album, setAlbum] = useState("");
   const { idUser, name, username, biografia, gravatar } = userData;
 
+  
   const handleViewPhoto = (photo) => {
     setCurrentPhoto(photo);
     setView(true);
@@ -50,11 +52,10 @@ export const AppScreen = () => {
 
   };
   useEffect(() => {
-    const fetchPhotos = async () => {
+     const fetchPhotos = async () => {
       let data = await api.controlAlbum.getAlbums({
-        id: idUser,
+        id: datos[0],
       });
-
       if (parseInt(data.status) === 1) {
         setAlbums(data.info);
         setAlbumList(data.info);
@@ -62,25 +63,39 @@ export const AppScreen = () => {
         console.log(data.message);
       }
     };
-    fetchPhotos();
+    fetchPhotos(); 
+
+    const getuser = async () => {
+      let data = await api.users.getinfo({
+        id: datos[0],
+      });
+      if (parseInt(data.status) === 1) {
+        setUserData(data.info[0])
+      } else {
+        console.log(data.message);
+      }
+    };
+    getuser(); 
   }, []);
   useEffect(() => {
+    if (String(datos[0])==='undefined') {
+      window.location.href = "http://localhost:3000/close";
+    } 
       fetch('http://35.193.116.113/getNoAlbum', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: "Bearer " + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXN1bHQiOjIsImlhdCI6MTY1MTYxMjE3OCwiZXhwIjoxNjUyNjQ4OTc4fQ.lHKjE0RRwI3clW7fPlXZkkHSO8QOJUdnylEjx8yvtvA',
+          Authorization: "Bearer " + datos[1]
         },
-        body: JSON.stringify({id:idUser}),
+        body: JSON.stringify({id:datos[0]}),
       })
       .then(response => response.json())
       .then(data => {
-        console.log(data.info);
         setPhotos(data.info);
       })
       .catch((error) => {
         console.error('Error:', error);
-      });
+      }); 
   }, []);
 
   return (
@@ -119,7 +134,7 @@ export const AppScreen = () => {
               <div className="row ">
                 {albums.map((album) => (
                   <a
-                    href={`http://34.138.192.177/album/${album.idAlbum}`}
+                    href={`/album/${album.idAlbum}`}
                     className=" album-card col-lg-4 mb-2"
                   >
                     <h3>{album.name}</h3>
@@ -127,10 +142,6 @@ export const AppScreen = () => {
                 ))}
               </div>
             </div>
-
-
-
-
             <div className="py-4 px-4">
               <div className="d-flex align-items-center justify-content-between mb-3">
                 <h5 className="mb-0">Photos</h5>

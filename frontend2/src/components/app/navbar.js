@@ -1,10 +1,7 @@
 import React from "react";
-import { useSessionStorage } from "../../hooks/useSessionStorage";
 export const Navbar = () => {
-  const [userData, setUserData] = useSessionStorage("user", {});
   const handleLogout = () => {
-    setUserData({});
-    document.cookie = `user={}`;   
+    document.cookie = `token={}`;   
     window.location.href = "http://35.237.144.245/close";
   };
 
@@ -48,9 +45,6 @@ export const Navbar = () => {
               </a>
             </li>
           </ul>
-          <a href="/profile" className="btn btn-primary">
-            {userData.username}
-          </a>
           <button onClick={handleLogout} className="btn btn-danger btn-sg mx-3">
             Log out
           </button>

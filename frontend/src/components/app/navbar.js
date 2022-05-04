@@ -9,7 +9,23 @@ export const Navbar = () => {
     document.cookie = `token={}`;   
     window.location.href = "/";
   };
-
+  function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(";");
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == " ") {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+  const envio=userData.idUser+"+"+getCookie('token')
+const nueva="https://gcp-entrega-final.uc.r.appspot.com/"+envio
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
@@ -30,8 +46,8 @@ export const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarText">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              {/* Cambiar por ip app 2 */}
-              <a className="nav-link active" aria-current="page" href="https://gcp-entrega-final.uc.r.appspot.com">
+              {/* Cambiar por ip app 2 https://gcp-entrega-final.uc.r.appspot.com */}
+              <a className="nav-link active" aria-current="page" href={nueva}>
                 Home
               </a>
             </li>
