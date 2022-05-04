@@ -35,8 +35,29 @@ kubectl apply -f deployment.yml
 
 # Google Engine y Network Balancer (Deployment)
 
-docker run -d -p 3000:3000 --name frontend angelhigueros11/frontend
+docker build --platform linux/amd64 -t angelhigueros11/frontend .
+docker run -d -p 80:3000 --name frontend angelhigueros11/frontend
 docker push angelhigueros11/frontend
+
+
+
+# App Engine (Deployment)
+
+<!-- Primera vez -->
+git clone https://github.com/angelhiguerosTelus/gcp-project.git
+npm i 
+npm run build
+gcloud app deploy
+
+<!-- actualizar -->
+git pull
+npm run build
+gcloud app deploy
+
+
+https://gcp-gcp-final.uc.r.appspot.com
+
+
 
 # Cloud Monitoring
 ## CREAR VM Y HACER DEPLOY
@@ -49,14 +70,10 @@ gcloud services enable stackdriver.googleapis.com
 gcloud deployment-manager deployments create dsudeployment --config deployment.yaml
 
 
-# 34.74.191.102
-# 35.237.49.178
-
-
-docker stop frontend
-docker rm  frontend
- docker rmi angelhigueros11/frontend:latest
-docker run -d -p 80:3000 --name frontend  angelhigueros11/frontend:latest
+docker stop gcp-frontend
+docker rm  gcp-frontend
+docker rmi angelhigueros11/gcp-frontend:latest
+docker run -d -p 80:3000 --name gcp-frontend  angelhigueros11/gcp-frontend:latest
 
 
 

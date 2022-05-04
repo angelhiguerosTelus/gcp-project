@@ -65,10 +65,6 @@ export const AppScreen = () => {
     fetchPhotos();
   }, []);
   useEffect(() => {
-    if (String(idUser)==='undefined') {
-      window.location.href = "http://34.138.192.177/close";
-    } 
-
       fetch('http://35.193.116.113/getNoAlbum', {
         method: 'POST',
         headers: {
