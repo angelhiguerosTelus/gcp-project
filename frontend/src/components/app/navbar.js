@@ -5,8 +5,8 @@ export const Navbar = () => {
   const [userData, setUserData] = useSessionStorage("user", {});
   const handleLogout = () => {
     setUserData({});
-    document.cookie = `user={}`;   
-    document.cookie = `token={}`;   
+    document.cookie = `user={}`;
+    document.cookie = `token={}`;
     window.location.href = "/";
   };
   function getCookie(cname) {
@@ -24,12 +24,16 @@ export const Navbar = () => {
     }
     return "";
   }
-  const envio=userData.idUser+"+"+getCookie('token')
-const nueva="https://gcp-entrega-final.uc.r.appspot.com/"+envio
+
+  let cookie = getCookie("token").replace(/./g, ",");
+
+  const envio = userData.idUser + "+" + cookie;
+
+  const nueva = "https://gcp-entrega-final.uc.r.appspot.com/" + envio;
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
-        <a className="navbar-brand" href="/app">
+        <a className="navbar-brand" href={nueva}>
           GCP Project
         </a>
         <button

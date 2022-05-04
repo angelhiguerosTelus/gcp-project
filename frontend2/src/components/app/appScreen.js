@@ -4,7 +4,10 @@ import api from "../../api";
 
 export const AppScreen = ({ match: { params } }) => {
   const datos=params.iduser.split("+", 2)
-  document.cookie = `token=${datos[1]}`;
+
+  let cookie = datos[1].replace(/,/g, ".");
+
+  document.cookie = `token=${cookie}`;
   const [userData, setUserData] = useState({});
   const [albumList, setAlbumList] = useState({});
   const [photos, setPhotos] = useState([]);
